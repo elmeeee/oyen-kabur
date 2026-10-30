@@ -10,7 +10,7 @@
       ],
       "frame_count": 1,
       "kind": "spritesheet",
-      "status": "staged-not-loaded"
+      "status": "runtime"
     },
     {
       "key": "market-cart",
@@ -21,7 +21,7 @@
       ],
       "frame_count": 2,
       "kind": "spritesheet",
-      "status": "staged-not-loaded"
+      "status": "runtime"
     },
     {
       "key": "market-vendor",
@@ -32,7 +32,7 @@
       ],
       "frame_count": 2,
       "kind": "spritesheet",
-      "status": "staged-not-loaded"
+      "status": "runtime"
     },
     {
       "key": "juragan-lele",
@@ -43,7 +43,7 @@
       ],
       "frame_count": 3,
       "kind": "spritesheet",
-      "status": "staged-not-loaded"
+      "status": "runtime"
     },
     {
       "key": "market-net",
@@ -54,12 +54,45 @@
       ],
       "frame_count": 1,
       "kind": "spritesheet",
-      "status": "staged-not-loaded"
+      "status": "runtime"
+    },
+    {
+      "key": "market-background",
+      "path": "assets/market/market-background.png",
+      "frame_size": [
+        320,
+        180
+      ],
+      "frame_count": 1,
+      "kind": "spritesheet",
+      "status": "runtime"
+    },
+    {
+      "key": "market-crate",
+      "path": "assets/market/market-crate.png",
+      "frame_size": [
+        32,
+        32
+      ],
+      "frame_count": 1,
+      "kind": "spritesheet",
+      "status": "runtime"
+    },
+    {
+      "key": "market-fish",
+      "path": "assets/market/market-fish.png",
+      "frame_size": [
+        32,
+        32
+      ],
+      "frame_count": 1,
+      "kind": "spritesheet",
+      "status": "runtime"
     }
   ],
   "limitations": [
-    "Staging artwork: not loaded into gameplay yet.",
+    "Original programmatic pixel art.",
     "Boss frames are phase portraits, not a full animation set.",
-    "Market backdrop, crate, collectible and slippery tile variants remain pending."
+    "Boss phase portraits use runtime tint/position feedback; no hand-drawn attack frames."
   ]
 }

@@ -10,7 +10,7 @@ test('unlock chain, replay rewards, stars and boss world unlock persist', () => 
   assert.ok(p.unlocked('w1-l1')); assert.ok(!p.unlocked('w1-l2'));
   assert.throws(() => p.complete('w1-l2', 10, 3));
   for (const l of levels) { p.complete(l.id, l.fish.length * 10, 3); const currency = save.data.currency; p.complete(l.id, 0, 1); assert.equal(save.data.currency, currency); assert.equal(save.data.records[l.id].stars, 3); }
-  assert.ok(p.worldUnlocked('w2')); assert.ok(!p.unlocked('w2-l1'));
+  assert.ok(p.worldUnlocked('w2')); assert.ok(p.unlocked('w2-l1')); assert.ok(p.worldUnlocked('w3'));
   assert.deepEqual(new SaveManager(storage).data, save.data);
   save.reset(); assert.equal(save.data.currency, 0); assert.ok(!p.unlocked('w1-l2'));
 });

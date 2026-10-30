@@ -11,7 +11,7 @@ def generate(key,size,count,draw):
  for frame in range(count):
   im=Image.new('RGBA',size); draw(ImageDraw.Draw(im),frame);sheet.paste(im,(frame*size[0],0))
  sheet.save(OUT/f'{key}.png')
- assets.append(dict(key=key,path=f'assets/market/{key}.png',frame_size=list(size),frame_count=count,kind='spritesheet',status='staged-not-loaded'))
+ assets.append(dict(key=key,path=f'assets/market/{key}.png',frame_size=list(size),frame_count=count,kind='spritesheet',status='runtime'))
 def tile(d,f):
  d.rectangle((0,0,31,31),fill='#476f78');d.rectangle((1,1,30,14),fill='#779b9a');d.rectangle((1,17,14,30),fill='#638789');d.rectangle((17,17,30,30),fill='#638789');d.line((3,6,27,6),fill='#a9d6ca',width=2)
 def cart(d,f):
@@ -27,11 +27,24 @@ def net(d,f):
  for y in range(8,57,8):d.line((8,y,56,y),fill='#c5b993',width=2)
  d.rectangle((6,6,58,58),outline='#735d4b',width=3)
 generate('market-stone',(32,32),1,tile);generate('market-cart',(64,64),2,cart);generate('market-vendor',(64,64),2,vendor);generate('juragan-lele',(128,128),3,boss);generate('market-net',(64,64),1,net)
-(OUT/'manifest.json').write_text(json.dumps(dict(version=1,assets=assets,limitations=['Staging artwork: not loaded into gameplay yet.','Boss frames are phase portraits, not a full animation set.','Market backdrop, crate, collectible and slippery tile variants remain pending.']),indent=2)+'\n')
-contact=Image.new('RGB',(640,420),'#203947');d=ImageDraw.Draw(contact)
+def background(d,f):
+ d.rectangle((0,0,319,179),fill='#83b8b3');d.ellipse((230,15,270,55),fill='#f0d99d')
+ for x in range(0,320,80):
+  d.rectangle((x+4,65,x+75,175),fill='#9a7656');d.polygon([(x,75),(x+40,40),(x+79,75)],fill='#ab674b')
+  for j in range(5):d.rectangle((x+j*16,75,x+j*16+8,94),fill='#e2c489')
+  d.rectangle((x+12,110,x+67,160),fill='#3d6469');d.rectangle((x+8,155,x+72,165),fill='#c59054')
+def crate(d,f):
+ d.rectangle((2,2,29,29),fill='#8d593a');d.rectangle((3,3,28,28),outline='#deb16b',width=3);d.line((5,5,26,26),fill='#c28a51',width=3)
+def fish(d,f):
+ d.ellipse((6,9,27,23),fill='#83c6c2');d.polygon([(8,16),(2,9),(2,24)],fill='#58989d');d.rectangle((21,13,23,15),fill='#203947')
+generate('market-background',(320,180),1,background)
+generate('market-crate',(32,32),1,crate)
+generate('market-fish',(32,32),1,fish)
+(OUT/'manifest.json').write_text(json.dumps(dict(version=1,assets=assets,limitations=['Original programmatic pixel art.','Boss frames are phase portraits, not a full animation set.','Boss phase portraits use runtime tint/position feedback; no hand-drawn attack frames.']),indent=2)+'\n')
+contact=Image.new('RGB',(800,650),'#203947');d=ImageDraw.Draw(contact)
 for i,a in enumerate(assets):
  im=Image.open(OUT/(a['key']+'.png'));im.thumbnail((380,128),Image.Resampling.NEAREST)
- x=10 if i<3 else 250;y=15+(i if i<3 else i-3)*135
+ x=10+(i%2)*400;y=10+(i//2)*160
  d.text((x,y),a['key'],fill='#f5dc9e');contact.paste(im,(x,y+17),im)
 contact.save(OUT/'contact-sheet.png')
 print('Generated five staged market assets and contact sheet.')

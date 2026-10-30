@@ -104,3 +104,35 @@ Remaining exact work:
 This checkpoint runs existing asset validation, strict production build, unit tests
 including the boss model, and the existing browser gameplay smoke. These checks do
 not validate unimplemented World 2 gameplay or staged market textures at runtime.
+
+## World 2 runtime delivery (supersedes staging checkpoint above)
+
+Implemented all five definitions in `src/data/world2.json` and enabled World 2:
+Pasar Pagi (slippery ground, carts), Gang Pedagang (vendor projectiles, collidable
+crates), Gerobak Gila (rideable carts and elevated routes), Gudang Ikan (ascending
+shelves, vertical camera and warned falling nets), Juragan Lele (three phases:
+fish volleys, cart charge, falling nets; recovery contact deals damage).
+The reusable MarketRuntime keeps these mechanics separate from World 1 logic.
+World 2 checkpoints persist as validated optional fields in version-2 saves;
+version-1/older version-2 saves remain accepted. Boss completion unlocks World 3,
+which remains unavailable future content. Shop and achievement tests pass.
+
+Art: eight original generated assets are loaded with nearest filtering and included
+in asset validation. Generator, manifest and contact sheet remain reproducible.
+Simple geometric pixel style is intentional; boss has three phase portraits with
+runtime motion/tint animation, not a full hand-drawn attack animation set. Market
+background is repeated with parallax; shared kampung structural decorations remain.
+
+Validation: strict production build, 14 unit tests, 23 asset validations and four
+source hashes, plus expanded Chromium smoke pass. Browser smoke enters/completes
+all five levels and verifies World 3 unlock after reload. Boss smoke explicitly
+sets recovery windows to test contact damage: it does NOT prove natural fight
+balance. Warehouse shelf reachability is checked against jump/gravity constants.
+Contact sheet and warehouse/boss screenshots inspected. Full manual traversal of
+all routes, cart riding under input, slippery stopping distances, net fairness,
+boss timing and cosmetic alignment still require human QA. Gerobak's ground route
+is forgiving and permits bypassing optional moving-platform bonuses.
+
+Remaining polish: dedicated slippery visual variant, richer boss animation, market
+replacement for shared structural scenery, difficulty tuning and full manual QA.
+All five levels and boss runtime now exist; do not describe manual QA as complete.
