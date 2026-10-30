@@ -70,3 +70,37 @@ Known gaps: only five playable levels, one survival boss rather than five unique
 boss state machines, three achievements, no audio/settings, no final world 2–5
 art, no complete vertical-level camera support. Geometry checks establish a ground
 route, not full human verification of timing, cosmetics, or boss fairness.
+
+## World 2 task checkpoint
+
+Branch: production/world2-pasar-ikan, based on cae80ae.
+
+Implemented staging components:
+- `src/world2/JuraganLele.ts`: deterministic six-hit, three-phase state machine,
+  with 1400ms telegraph, 1000ms attack, 1800ms recovery; only one hit per recovery.
+  Attack identities: fish volley, cart charge, falling nets. No scene integration yet.
+- `scripts/generate_market_art.py`: original stone tile, fish cart, vendor, net,
+  and 128px Juragan phase portraits. Metadata and contact sheet under
+  `public/assets/market/`. Art explicitly marked staged, not loaded by Phaser.
+- Boss phase/timing/defeat/invalid-delta unit tests.
+
+World 2 is NOT complete and remains unavailable. No World 2 level is implemented
+in this checkpoint. Existing campaign, runtime assets, save schema and economy
+are unchanged. Continue on this branch without regenerating the foundation.
+
+Remaining exact work:
+1. Add w2-l1..w2-l5 JSON with safe spawn/goal/checkpoints and distinct mechanics.
+2. Implement slippery surfaces + moving carts; vendor projectiles + crates;
+   rideable moving platforms; vertical camera/respawn + falling-net warnings.
+3. Bind boss state machine to attack spawning, recovery hit detection and defeat.
+4. Generate backdrop, crate, collectible and tile variants; integrate and visually
+   review all staged art. Phase portraits still need attack/recovery animation.
+5. Extend selector to the chosen world; enable w2 only after all five levels pass.
+6. Test v1/v2 save preservation and World 2 completion unlocking World 3.
+7. Extend asset validator to market manifest and add per-level browser transitions,
+   completion/replay, vertical route checks and real-physics jump coverage.
+8. Manually playtest all five levels and boss fairness; none visually verified yet.
+
+This checkpoint runs existing asset validation, strict production build, unit tests
+including the boss model, and the existing browser gameplay smoke. These checks do
+not validate unimplemented World 2 gameplay or staged market textures at runtime.

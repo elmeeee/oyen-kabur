@@ -1,0 +1,65 @@
+{
+  "version": 1,
+  "assets": [
+    {
+      "key": "market-stone",
+      "path": "assets/market/market-stone.png",
+      "frame_size": [
+        32,
+        32
+      ],
+      "frame_count": 1,
+      "kind": "spritesheet",
+      "status": "staged-not-loaded"
+    },
+    {
+      "key": "market-cart",
+      "path": "assets/market/market-cart.png",
+      "frame_size": [
+        64,
+        64
+      ],
+      "frame_count": 2,
+      "kind": "spritesheet",
+      "status": "staged-not-loaded"
+    },
+    {
+      "key": "market-vendor",
+      "path": "assets/market/market-vendor.png",
+      "frame_size": [
+        64,
+        64
+      ],
+      "frame_count": 2,
+      "kind": "spritesheet",
+      "status": "staged-not-loaded"
+    },
+    {
+      "key": "juragan-lele",
+      "path": "assets/market/juragan-lele.png",
+      "frame_size": [
+        128,
+        128
+      ],
+      "frame_count": 3,
+      "kind": "spritesheet",
+      "status": "staged-not-loaded"
+    },
+    {
+      "key": "market-net",
+      "path": "assets/market/market-net.png",
+      "frame_size": [
+        64,
+        64
+      ],
+      "frame_count": 1,
+      "kind": "spritesheet",
+      "status": "staged-not-loaded"
+    }
+  ],
+  "limitations": [
+    "Staging artwork: not loaded into gameplay yet.",
+    "Boss frames are phase portraits, not a full animation set.",
+    "Market backdrop, crate, collectible and slippery tile variants remain pending."
+  ]
+}
