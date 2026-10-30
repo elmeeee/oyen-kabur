@@ -1,14 +1,15 @@
+import { Player } from '../entities/Player';
 import Phaser from 'phaser';
 import { fishSpawns, GRAVITY, JUMP, platforms, RunState, sandalRoutes, SPEED, WORLD_WIDTH } from '../level';
 import { label, village } from './presentation';
 export class GameScene extends Phaser.Scene {
-  private player!: Phaser.Physics.Arcade.Sprite;
+  private player!: Player;
   private keys!: Record<'left' | 'right' | 'a' | 'd' | 'space' | 'up', Phaser.Input.Keyboard.Key>;
   private hud!: Phaser.GameObjects.Text;
   private state = new RunState();
   private finished = false;
   private checkpoint = 90;
-  private sandals: { sprite: Phaser.Physics.Arcade.Image; x: number; y: number; range: number; phase: number }[] = [];
+  private sandals: { sprite: Phaser.Physics.Arcade.Sprite; x: number; y: number; range: number; phase: number }[] = [];
   constructor() { super('GameScene'); }
   create(): void {
     this.state = new RunState(); this.finished = false; this.checkpoint = 90; this.sandals = [];
@@ -28,25 +29,35 @@ export class GameScene extends Phaser.Scene {
     this.add.triangle(3480, 351, 0, 40, 90, 0, 180, 40, 0x9c503b);
     label(this, 3480, 385, 'POS RONDA', 16, '#fff0c0').setOrigin(0.5);
     label(this, 3480, 414, 'FINISH →', 16, '#fff0c0').setOrigin(0.5);
+    this.add.image(3480, 445, 'wall-facade').setDisplaySize(100, 70);
+    const chili = this.physics.add.sprite(1530, 450, 'chili').play('chili');
+    chili.body.setAllowGravity(false); chili.setSize(22, 22);
     const goal = this.add.zone(3480, 430, 120, 104); this.physics.add.existing(goal, true);
-    this.player = this.physics.add.sprite(90, 445, 'oyen').setDepth(5).setCollideWorldBounds(true);
-    this.player.setSize(28, 30).setOffset(7, 4).setMaxVelocity(SPEED, 700);
+    this.player = new Player(this, 90, 445);
+    this.player.setMaxVelocity(SPEED, 700);
     this.physics.add.collider(this.player, ground);
-    const fish = this.physics.add.staticGroup();
+    this.physics.add.overlap(this.player, chili, () => { chili.disableBody(true, true); this.state.invulnerableUntil = this.time.now + 5000; });
+    for (let i = 0; i < 3; i++) {
+      const heart = this.add.sprite(365 + i * 26, 32, 'heart').play('heart').setScrollFactor(0).setDepth(21);
+      this.events.on('update', () => heart.setAlpha(i < this.state.lives ? 1 : 0.2));
+    }
+    const fish = this.physics.add.staticGroup({ classType: Phaser.Physics.Arcade.Sprite });
     fishSpawns.forEach(p => {
-      const f = fish.create(p.x, p.y, 'fish') as Phaser.Physics.Arcade.Image;
-      f.setSize(24, 18); this.tweens.add({ targets: f, angle: { from: -8, to: 8 }, duration: 700, yoyo: true, repeat: -1 });
+      const f = fish.create(p.x, p.y, 'fish') as Phaser.Physics.Arcade.Sprite;
+      f.play('fish'); f.setSize(24, 18); this.tweens.add({ targets: f, angle: { from: -8, to: 8 }, duration: 700, yoyo: true, repeat: -1 });
     });
     this.physics.add.overlap(this.player, fish, (_player, item) => {
-      const f = item as Phaser.Physics.Arcade.Image;
+      const f = item as Phaser.Physics.Arcade.Sprite;
       if (!f.active) return;
       this.state.collect(); f.disableBody(true, true);
+      const effect = this.add.sprite(f.x, f.y, 'spark').play('spark').setDepth(8);
+      effect.once('animationcomplete', () => effect.destroy());
       const pop = label(this, f.x, f.y - 10, '+10', 16, '#fff2b8').setOrigin(0.5);
       this.tweens.add({ targets: pop, y: pop.y - 35, alpha: 0, duration: 650, onComplete: () => pop.destroy() });
     });
     for (let i = 0; i < sandalRoutes.length; i++) {
       const r = sandalRoutes[i];
-      const sprite = this.physics.add.image(r.x, r.y, 'sandal').setDepth(4);
+      const sprite = this.physics.add.sprite(r.x, r.y, 'sandal-spin').play(i % 2 ? 'sandal-fly' : 'sandal-spin').setDepth(4);
       sprite.body.setAllowGravity(false);
       sprite.setImmovable(true).setSize(26, 12);
       this.sandals.push({ sprite, ...r, phase: i * 1.7 });
@@ -82,7 +93,7 @@ export class GameScene extends Phaser.Scene {
     this.player.setVelocityX(direction * SPEED);
     if (direction) this.player.setFlipX(direction < 0);
     if ((Phaser.Input.Keyboard.JustDown(this.keys.space) || Phaser.Input.Keyboard.JustDown(this.keys.up)) && body.blocked.down) this.player.setVelocityY(-JUMP);
-    this.player.setAngle(body.blocked.down && direction ? Math.sin(time / 65) * 4 : 0);
+    this.player.animate(time < this.state.invulnerableUntil);
     this.player.setAlpha(time < this.state.invulnerableUntil ? (Math.floor(time / 90) % 2 ? 0.35 : 1) : 1);
     if (body.blocked.down && this.player.y > 420) this.checkpoint = this.player.x;
     if (this.player.y > 580) {

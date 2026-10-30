@@ -2,7 +2,7 @@
 
 A playable 960×540 retro platformer about a chubby orange cat escaping through an
 Indonesian kampung with stolen fish. Made with Phaser 3, strict TypeScript, and Vite.
-All graphics are generated locally; no external assets or credentials are needed.
+Graphics are processed from the supplied concept sheets; no remote assets or credentials are needed.
 
 ## Develop
 
@@ -51,4 +51,6 @@ Production hosting can serve `dist/` as static files, including under a subpath.
 platforms, physics constants, fish, sandal patrols and run state. The camera follows
 Oyen across a 3600-pixel village with layered parallax scenery. Arcade physics
 handles platforms and overlaps. `src/assets/pipeline.ts` provides a manifest and
-procedural fallback textures; see `public/assets/README.md` for replacement assets.
+reviewed concept-sheet extraction; see `public/assets/README.md` for replacement assets.
+
+Asset regeneration and manual-review limitations are documented in `public/assets/README.md`. Run `python3 scripts/process_assets.py` after editing reviewed source regions.
