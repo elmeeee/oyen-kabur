@@ -54,3 +54,16 @@ handles platforms and overlaps. `src/assets/pipeline.ts` provides a manifest and
 reviewed concept-sheet extraction; see `public/assets/README.md` for replacement assets.
 
 Asset regeneration and manual-review limitations are documented in `public/assets/README.md`. Run `python3 scripts/process_assets.py` after editing reviewed source regions.
+
+## v0.2 manual playtest
+
+- Walk off a roof and press jump immediately (100 ms grace); press jump just before landing (120 ms buffer).
+- Compare a quick tap with a held Space/Up jump. Check acceleration, reversal, and stopping near edges.
+- Land repeatedly: feet should remain aligned and collisions should stay consistent.
+- Collect fish: check sparkle bursts, +10 text, and score. Take a sandal hit: check brief flash, knockback and 1.5-second protection.
+- Reach the next ground section: check checkpoint notice; fall and confirm recovery at its safe starting point.
+- Escape pauses/resumes; verify enemies and player remain still. R restarts even while paused.
+- Finish or lose, check BEST score, then reload. With browser storage blocked, gameplay should still work with a session-only record.
+- Enable OS reduced-motion preference: hit camera shake should be disabled.
+
+During gameplay Escape now pauses instead of returning to the menu. Result screens retain Escape-to-menu.
