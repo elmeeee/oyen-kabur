@@ -16,6 +16,8 @@ test('playable game flow in Chromium', { timeout: 60000 }, async () => {
       const { game } = await import('/src/main.ts');
       return game.scene.isActive('MainMenuScene');
     });
+    await page.keyboard.press('Enter'); await page.waitForTimeout(100);
+    await page.keyboard.press('Enter'); await page.waitForTimeout(100);
     await page.keyboard.press('Enter'); await page.waitForTimeout(600);
     // Read engine state without adding a production debug API.
     const inspect = async (expression: string) => page.evaluate(async expression => {
@@ -38,15 +40,15 @@ test('playable game flow in Chromium', { timeout: 60000 }, async () => {
     await page.keyboard.down('Space'); await page.waitForTimeout(180);
     await page.keyboard.up('Space');
     assert.ok((await inspect('scene.player.y') as number) < groundY - 30);
-    await inspect('(scene.player.setPosition(270, 370).setVelocity(0, 0), true)');
+    await inspect('(scene.player.setPosition(300, 370).setVelocity(0, 0), true)');
     await page.waitForTimeout(120); assert.equal(await inspect('scene.state.score'), 10);
     await inspect('(scene.hurt(), scene.hurt(), true)'); assert.equal(await inspect('scene.state.lives'), 2);
     await inspect('(scene.state.invulnerableUntil = 0, scene.hurt(), scene.state.invulnerableUntil = 0, scene.hurt(), true)');
-    assert.equal(await inspect('game.scene.isActive("GameOverScene")'), true);
+    assert.equal(await inspect('game.scene.isActive("ResultScene")'), true);
     await page.keyboard.press('Enter'); await page.waitForTimeout(200);
     assert.equal(await inspect('scene.state.lives'), 3); assert.equal(await inspect('scene.state.score'), 0);
-    await inspect('(scene.player.setPosition(3480, 440).setVelocity(0, 0), true)');
-    await page.waitForTimeout(150); assert.equal(await inspect('game.scene.isActive("VictoryScene")'), true);
+    await inspect('(scene.player.setPosition(scene.level.goal, 440).setVelocity(0, 0), true)');
+    await page.waitForTimeout(150); assert.equal(await inspect('game.scene.isActive("ResultScene")'), true);
     await page.keyboard.press('Escape'); await page.waitForTimeout(100);
     assert.equal(await inspect('game.scene.isActive("MainMenuScene")'), true);
     await page.screenshot({ path: '/tmp/oyen-menu.png' });

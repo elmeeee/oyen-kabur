@@ -1,9 +1,19 @@
+import { LevelLoader } from '../progression/registry';
+import { progression } from '../progression/ProgressionManager';
 import { highScore } from '../highScore';
 import { Player } from '../entities/Player';
 import Phaser from 'phaser';
-import { fishSpawns, GRAVITY, JUMP, platforms, RunState, sandalRoutes, SPEED, WORLD_WIDTH } from '../level';
+import { GRAVITY, JUMP, RunState, SPEED } from '../level';
 import { label, village } from './presentation';
 export class GameScene extends Phaser.Scene {
+  private level = LevelLoader.load('w1-l1');
+  private bossCycle = -1;
+  private bossHits = 0;
+  private bossWarning!: Phaser.GameObjects.Text;
+  init(data: { levelId?: string }): void {
+    const id = data.levelId ?? this.level.id;
+    this.level = LevelLoader.load(progression.unlocked(id) ? id : 'w1-l1');
+  }
   private player!: Player;
   private keys!: Record<'left' | 'right' | 'a' | 'd' | 'space' | 'up', Phaser.Input.Keyboard.Key>;
   private hud!: Phaser.GameObjects.Text;
@@ -22,10 +32,12 @@ export class GameScene extends Phaser.Scene {
   private sandals: { sprite: Phaser.Physics.Arcade.Sprite; x: number; y: number; range: number; phase: number }[] = [];
   constructor() { super('GameScene'); }
   create(): void {
+    const { platforms, fish: fishSpawns, hazards: sandalRoutes, width: WORLD_WIDTH, goal: finish } = this.level;
+    this.bossCycle = -1; this.bossHits = 0;
     this.state = new RunState(); this.finished = false; this.checkpoint = 90; this.sandals = [];
     this.checkpointIndex = 0; this.groundedAt = -Infinity; this.jumpAt = -Infinity;
     this.wasGrounded = false; this.hitUntil = 0; this.paused = false; this.elapsed = 0;
-    this.physics.resume(); this.tweens.resumeAll(); this.anims.resumeAll();
+    this.time.paused = false; this.physics.resume(); this.tweens.resumeAll(); this.anims.resumeAll();
     village(this, WORLD_WIDTH);
     this.physics.world.setBounds(0, -100, WORLD_WIDTH, 800);
     const ground = this.physics.add.staticGroup();
@@ -38,14 +50,14 @@ export class GameScene extends Phaser.Scene {
       ground.add(tile); (tile.body as Phaser.Physics.Arcade.StaticBody).updateFromGameObject();
     }
     // Finish landmark, visible from the ground route and final roof.
-    this.add.rectangle(3480, 425, 135, 114, 0x6e8b69);
-    this.add.triangle(3480, 351, 0, 40, 90, 0, 180, 40, 0x9c503b);
-    label(this, 3480, 385, 'POS RONDA', 16, '#fff0c0').setOrigin(0.5);
-    label(this, 3480, 414, 'FINISH →', 16, '#fff0c0').setOrigin(0.5);
-    this.add.image(3480, 445, 'wall-facade').setDisplaySize(100, 70);
-    const chili = this.physics.add.sprite(1530, 450, 'chili').play('chili');
+    this.add.rectangle(finish, 425, 135, 114, 0x6e8b69);
+    this.add.triangle(finish, 351, 0, 40, 90, 0, 180, 40, 0x9c503b);
+    label(this, finish, 385, 'POS RONDA', 16, '#fff0c0').setOrigin(0.5);
+    label(this, finish, 414, 'FINISH →', 16, '#fff0c0').setOrigin(0.5);
+    this.add.image(finish, 445, 'wall-facade').setDisplaySize(100, 70);
+    const chili = this.physics.add.sprite(Math.min(1530, finish - 300), 450, 'chili').play('chili');
     chili.body.setAllowGravity(false); chili.setSize(22, 22);
-    const goal = this.add.zone(3480, 430, 120, 104); this.physics.add.existing(goal, true);
+    const goal = this.add.zone(finish, 430, 120, 104); this.physics.add.existing(goal, true);
     this.player = new Player(this, 90, 445);
     this.player.setMaxVelocity(SPEED, 700);
     this.physics.add.collider(this.player, ground);
@@ -80,12 +92,13 @@ export class GameScene extends Phaser.Scene {
       this.sandals.push({ sprite, ...r, phase: i * 1.7 });
       this.physics.add.overlap(this.player, sprite, () => this.hurt());
     }
-    this.physics.add.overlap(this.player, goal, () => this.end(true));
+    this.physics.add.overlap(this.player, goal, () => { if (!this.level.boss || this.bossHits >= 5) this.end(true); });
+    this.bossWarning = label(this, 480, 115, '', 22, '#ffe7a0').setOrigin(0.5).setScrollFactor(0).setDepth(22);
     this.cameras.main.setBounds(0, 0, WORLD_WIDTH, 540).startFollow(this.player, true, 0.08, 0.1, -80, 0).setDeadzone(100, 80);
     this.add.rectangle(480, 31, 912, 42, 0x193b3c, 0.94).setScrollFactor(0).setDepth(20).setStrokeStyle(2, 0x6f9177);
     this.hud = label(this, 42, 21, '', 18).setScrollFactor(0).setDepth(21);
     label(this, 918, 22, 'SPACE JUMP   ESC PAUSE   R RETRY', 14, '#b6caaa').setOrigin(1, 0).setScrollFactor(0).setDepth(21);
-    const hint = label(this, 90, 370, 'IKANNYA DIBAWA! →\nHop onto the roofs for extra fish.', 14, '#243f3b');
+    const hint = label(this, 90, 370, `${this.level.name} →\nStars: finish • ${this.level.objectives.fish} fish • ${this.level.objectives.lives}+ lives`, 14, '#243f3b');
     this.time.delayedCall(6000, () => hint.destroy());
     this.keys = this.input.keyboard!.addKeys({ left: 'LEFT', right: 'RIGHT', a: 'A', d: 'D', space: 'SPACE', up: 'UP' }) as typeof this.keys;
     this.input.keyboard!.on('keydown-R', () => this.scene.restart());
@@ -94,13 +107,13 @@ export class GameScene extends Phaser.Scene {
       if (event.repeat) return;
       this.paused = !this.paused;
       this.pauseOverlay.setVisible(this.paused);
-      if (this.paused) { this.pauseAt = this.time.now; this.physics.pause(); this.tweens.pauseAll(); this.anims.pauseAll(); }
+      if (this.paused) { this.pauseAt = this.time.now; this.time.paused = true; this.physics.pause(); this.tweens.pauseAll(); this.anims.pauseAll(); }
       else {
         const gap = this.time.now - this.pauseAt;
         this.state.invulnerableUntil += gap; this.hitUntil += gap;
         this.groundedAt = -Infinity; this.jumpAt = -Infinity;
         this.input.keyboard!.resetKeys();
-        this.physics.resume(); this.tweens.resumeAll(); this.anims.resumeAll();
+        this.time.paused = false; this.physics.resume(); this.tweens.resumeAll(); this.anims.resumeAll();
       }
     });
   }
@@ -117,11 +130,24 @@ export class GameScene extends Phaser.Scene {
   private end(won: boolean): void {
     if (this.finished) return;
     this.finished = true; this.physics.pause();
-    this.scene.start(won ? 'VictoryScene' : 'GameOverScene', { score: this.state.score });
+    const stars = won ? progression.complete(this.level.id, this.state.score, this.state.lives) : 0;
+    this.scene.start('ResultScene', { levelId: this.level.id, won, score: this.state.score, stars });
   }
   update(_time: number, delta: number): void {
     if (!this.player || this.finished || this.paused) return;
     const time = this.time.now; this.elapsed += delta;
+    const platforms = this.level.platforms.filter(p => p.y === 482);
+    if (this.level.boss && this.player.x > this.level.width - 650 && this.bossHits < 5) {
+      const cycle = Math.floor(this.elapsed / 2400), phase = this.elapsed % 2400;
+      this.bossWarning.setText(phase < 1500 ? 'EMAK: AWAS! Jump over the low sandal!' : `DODGE! ${this.bossHits}/5`);
+      if (phase >= 1500 && cycle !== this.bossCycle) {
+        this.bossCycle = cycle;
+        const shot = this.physics.add.sprite(this.level.goal, 455, 'sandal-spin').play('sandal-spin');
+        shot.body.setAllowGravity(false); shot.setSize(26, 12).setVelocityX(-260);
+        this.physics.add.overlap(this.player, shot, () => this.hurt());
+        this.time.delayedCall(1800, () => { shot.destroy(); this.bossHits++; });
+      }
+    } else if (this.level.boss && this.bossHits >= 5) this.bossWarning.setText('EMAK CAPEK! Reach the finish →');
     const body = this.player.body as Phaser.Physics.Arcade.Body;
     const direction = Number(this.keys.right.isDown || this.keys.d.isDown) - Number(this.keys.left.isDown || this.keys.a.isDown);
     if (time >= this.hitUntil) this.player.setVelocityX(Phaser.Math.Linear(body.velocity.x, direction * SPEED, Math.min(1, delta / (direction ? 65 : 45))));
@@ -142,7 +168,7 @@ export class GameScene extends Phaser.Scene {
     this.player.animate(time < this.hitUntil);
     this.player.setAlpha(time < this.state.invulnerableUntil ? 0.65 : 1);
     if (body.blocked.down && this.player.y > 420) {
-      const index = platforms.slice(0, 4).findIndex(p => this.player.x > p.x + 30 && this.player.x < p.x + p.w - 30);
+      const index = platforms.findIndex(p => this.player.x > p.x + 30 && this.player.x < p.x + p.w - 30);
       if (index > this.checkpointIndex) {
         this.checkpointIndex = index; this.checkpoint = platforms[index].x + 60;
         const notice = label(this, 480, 90, 'CHECKPOINT AMAN ✓', 22).setOrigin(0.5).setScrollFactor(0).setDepth(25);

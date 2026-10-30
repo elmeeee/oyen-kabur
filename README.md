@@ -67,3 +67,32 @@ Asset regeneration and manual-review limitations are documented in `public/asset
 - Enable OS reduced-motion preference: hit camera shake should be disabled.
 
 During gameplay Escape now pauses instead of returning to the menu. Result screens retain Escape-to-menu.
+
+## World 1 progression slice
+
+Start opens World Map, then Level Select. Enter selects World 1 / its first level;
+click any unlocked level to replay it. Complete levels in order. The World 1 boss
+unlocks World 2, which is explicitly marked as future content (Worlds 2–5 are not
+playable yet). All five World 1 layouts live in `src/data/world1.json` and use the
+same GameScene, player, assets and physics.
+
+Stars: one for finishing, one for the level's fish objective, one for its remaining
+lives objective. The fish bank credits the best collected fish count per completed
+level plus a one-time completion bonus. Replays only credit improvements; failures
+award no currency. Best scores/stars never decrease. Reset Save on World Map asks
+for confirmation and clears progression. Saves use the version-1
+`oyen-progression` localStorage key, validated on load, with session-only fallback
+if storage is unavailable. Old standalone high scores are separate and do not
+unlock levels. Unknown save versions fall back to a new progression record.
+
+Boss: reach the final arena, watch the warning, and jump over five low sandal
+attacks. Then reach the finish. This is a survival boss represented by the existing
+sandal artwork and text telegraphs; dedicated Emak art and combat phases remain
+future work. No new external assets are required.
+
+Manual checks: clear each level, revisit the selector, reload to verify unlocks,
+replay without increasing the bank for identical results, improve fish/stars,
+confirm/cancel reset, pause during a boss attack, and fall after each checkpoint.
+Automated checks cover save corruption/fallback, unlock order, rewards, reset,
+world unlock, route geometry, and browser gameplay. Full human playtesting of the
+five levels' difficulty and boss balance remains recommended.
