@@ -120,3 +120,15 @@ Playtest: earn 50 fish across replays, preview and buy bandana, try buying twice
 equip and reload, inspect idle/run/jump/fall while facing both directions, unequip,
 check insufficient funds, unlock each achievement, inspect world-map totals, and
 confirm/cancel Reset Save. No real-money payments or network services are used.
+
+## Pasar Ikan / World 2
+
+Clear World 1 to unlock five market levels. Slippery floors retain momentum;
+ride carts for elevated fish; jump vendor projectiles and crates. Warehouse nets
+show a warning before dropping. Warehouse checkpoints save your ascent across
+reloads. Juragan cycles telegraph → attack → recovery; touch him during recovery
+once per cycle to deal damage. Six hits defeat three phases and unlock World 3
+(future content). Escape pauses encounters and R retries from the saved checkpoint.
+
+Regenerate market art with `python3 scripts/generate_market_art.py` and validate
+with `npm run validate:assets`. See production-plan.md for visual and QA limitations.

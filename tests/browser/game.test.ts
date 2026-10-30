@@ -52,6 +52,36 @@ test('playable game flow in Chromium', { timeout: 60000 }, async () => {
     await page.keyboard.press('Escape'); await page.waitForTimeout(100);
     assert.equal(await inspect('game.scene.isActive("MainMenuScene")'), true);
     await page.screenshot({ path: '/tmp/oyen-menu.png' });
+    await page.evaluate(async () => {
+      // @ts-expect-error Vite module URL
+      const { progression } = await import('/src/progression/ProgressionManager.ts');
+      for(let i=1;i<=5;i++) progression.complete(`w1-l${i}`,0,3);
+    });
+    for(let i=1;i<=5;i++) {
+      await inspect(`(game.scene.start('GameScene', {levelId:'w2-l${i}'}), true)`);
+      await page.waitForTimeout(250);
+      assert.equal(await inspect('scene.level.id'), `w2-l${i}`);
+      assert.equal(await inspect('game.textures.exists("juragan-lele")'), true);
+      if(i===5) {
+        // Exercise the integrated boss recovery-hit path; not an end-to-end human fight.
+        for(let hit=0;hit<6;hit++) {
+          await inspect('(scene.market.boss.state="recovery", scene.market.boss.elapsed=0, scene.market.boss.damagedThisRecovery=false, scene.player.setPosition(scene.level.goal-170,418).setVelocity(0,0), true)');
+          await page.waitForTimeout(80);
+        }
+        assert.equal(await inspect('scene.market.defeated'), true);
+      }
+      await page.screenshot({path:`/tmp/oyen-world2-${i}.png`});
+      await inspect('(scene.player.setPosition(scene.level.goal, scene.level.market.goalY).setVelocity(0,0), true)');
+      await page.waitForTimeout(150);
+      assert.equal(await inspect('game.scene.isActive("ResultScene")'),true);
+    }
+    await page.reload();
+    await page.waitForTimeout(500);
+    assert.equal(await page.evaluate(async()=>{
+      // @ts-expect-error Vite module URL
+      const {progression}=await import('/src/progression/ProgressionManager.ts');
+      return progression.worldUnlocked('w3');
+    }),true);
     assert.deepEqual(errors, []);
   } finally { await browser.close(); server.kill(); }
 });

@@ -1,9 +1,9 @@
 import { catalog, isCosmetic, type CosmeticId } from './catalog';
 import { levels } from './registry';
 export interface RecordData { completed: boolean; bestScore: number; stars: number; fish: number }
-export interface SaveData { version: 2; collectedFish: number; owned: CosmeticId[]; equipped: CosmeticId | null; achievements: string[]; records: Record<string, RecordData>; currency: number }
+export interface SaveData { version: 2; checkpoints: Record<string, number>; collectedFish: number; owned: CosmeticId[]; equipped: CosmeticId | null; achievements: string[]; records: Record<string, RecordData>; currency: number }
 export interface StorageAdapter { getItem(key: string): string | null; setItem(key: string, value: string): void }
-const empty = (): SaveData => ({ version: 2, records: {}, currency: 0, collectedFish: 0, owned: [], equipped: null, achievements: [] });
+const empty = (): SaveData => ({ version: 2, checkpoints: {}, records: {}, currency: 0, collectedFish: 0, owned: [], equipped: null, achievements: [] });
 export class SaveManager {
   data = empty();
   persistent = true;
@@ -24,6 +24,7 @@ export class SaveManager {
         this.data.equipped = isCosmetic(candidate.equipped) && this.data.owned.includes(candidate.equipped) ? candidate.equipped : null;
         this.data.achievements = Array.isArray(candidate.achievements) ? [...new Set(candidate.achievements.filter(a => ['fish100', 'clean-level', 'clean-boss'].includes(a)))] : [];
       }
+      for(const level of levels) { const index=candidate.checkpoints?.[level.id]; if(level.market && Number.isInteger(index) && index! >= 0 && index! < level.market.checkpoints.length) this.data.checkpoints[level.id]=index!; }
       this.recalculate();
     } catch { this.persistent = false; }
   }

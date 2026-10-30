@@ -12,12 +12,12 @@ test('every playable level has safe spawn, finish, checkpoints and ground route'
   const ground=l.platforms.filter(p=>p.y===482).sort((a,b)=>a.x-b.x);
   assert.ok(ground.some(p=>90>=p.x+20&&90<=p.x+p.w-20),`${l.id} spawn`);
   assert.ok(ground.some(p=>l.goal>=p.x+30&&l.goal<=p.x+p.w-30),`${l.id} finish`);
-  for(const p of l.platforms) assert.ok(p.x>=0&&p.w>0&&p.x+p.w<=l.width&&p.y>0&&p.y<540,`${l.id} bounds`);
+  for(const p of l.platforms) assert.ok(p.x>=0&&p.w>0&&p.x+p.w<=l.width&&p.y>(l.market?.top ?? 0)&&p.y<540,`${l.id} bounds`);
   for(let i=1;i<ground.length;i++){
    assert.ok(ground[i].w>=100,`${l.id} checkpoint width`);
    const gap=ground[i].x-ground[i-1].x-ground[i-1].w;
    assert.ok(gap<SPEED*(2*JUMP/GRAVITY)-40,`${l.id} reachable ground`);
   }
-  for(const fish of l.fish) assert.ok(fish.x>0&&fish.x<l.width&&fish.y>0&&fish.y<482);
+  for(const fish of l.fish) assert.ok(fish.x>0&&fish.x<l.width&&fish.y>(l.market?.top ?? 0)&&fish.y<482);
  }
 });

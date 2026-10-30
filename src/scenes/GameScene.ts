@@ -1,3 +1,4 @@
+import { MarketRuntime } from '../world2/MarketRuntime';
 import { LevelLoader } from '../progression/registry';
 import { progression } from '../progression/ProgressionManager';
 import { highScore } from '../highScore';
@@ -14,6 +15,8 @@ export class GameScene extends Phaser.Scene {
     const id = data.levelId ?? this.level.id;
     this.level = LevelLoader.load(progression.unlocked(id) ? id : 'w1-l1');
   }
+  private market?: MarketRuntime;
+  private checkpointY = 430;
   private player!: Player;
   private keys!: Record<'left' | 'right' | 'a' | 'd' | 'space' | 'up', Phaser.Input.Keyboard.Key>;
   private hud!: Phaser.GameObjects.Text;
@@ -39,15 +42,17 @@ export class GameScene extends Phaser.Scene {
     this.checkpointIndex = 0; this.groundedAt = -Infinity; this.jumpAt = -Infinity;
     this.wasGrounded = false; this.hitUntil = 0; this.paused = false; this.elapsed = 0;
     this.time.paused = false; this.physics.resume(); this.tweens.resumeAll(); this.anims.resumeAll();
+    this.market = undefined; this.checkpointY = 430;
     village(this, WORLD_WIDTH);
-    this.physics.world.setBounds(0, -100, WORLD_WIDTH, 800);
+    if(this.level.market) this.add.tileSprite(0, 0, WORLD_WIDTH, 540, 'market-background').setOrigin(0).setScrollFactor(0.3);
+    this.physics.world.setBounds(0, (this.level.market?.top ?? 0)-100, WORLD_WIDTH, 900-(this.level.market?.top ?? 0));
     const ground = this.physics.add.staticGroup();
     for (const p of platforms) {
       if (p.y < 482) {
         this.add.rectangle(p.x + p.w / 2, p.y + 16, p.w - 16, 482 - p.y, 0xc5b681).setOrigin(0.5, 0);
         this.add.rectangle(p.x + p.w / 2, p.y + 65, 26, 42, 0x416766);
       }
-      const tile = this.add.tileSprite(p.x, p.y, p.w, p.y === 482 ? 58 : 16, p.y === 482 ? 'ground' : 'roof').setOrigin(0);
+      const tile = this.add.tileSprite(p.x, p.y, p.w, p.y === 482 ? 58 : 16, this.level.market ? 'market-stone' : p.y === 482 ? 'ground' : 'roof').setOrigin(0);
       ground.add(tile); (tile.body as Phaser.Physics.Arcade.StaticBody).updateFromGameObject();
     }
     // Finish landmark, visible from the ground route and final roof.
@@ -58,8 +63,15 @@ export class GameScene extends Phaser.Scene {
     this.add.image(finish, 445, 'wall-facade').setDisplaySize(100, 70);
     const chili = this.physics.add.sprite(Math.min(1530, finish - 300), 450, 'chili').play('chili');
     chili.body.setAllowGravity(false); chili.setSize(22, 22);
-    const goal = this.add.zone(finish, 430, 120, 104); this.physics.add.existing(goal, true);
+    const goal = this.add.zone(finish, this.level.market?.goalY ?? 430, 120, 104); this.physics.add.existing(goal, true);
     this.player = new Player(this, 90, 445);
+    if(this.level.market) {
+      this.market = new MarketRuntime(this, this.level, this.player, () => this.hurt());
+      label(this, finish, this.level.market.goalY-60, 'PASAR EXIT →', 20);
+      const saved = progression.saves.data.checkpoints?.[this.level.id];
+      const cp = this.level.market.checkpoints[saved ?? 0];
+      if(cp) { this.player.setPosition(cp.x,cp.y); this.checkpoint=cp.x; this.checkpointY=cp.y; this.checkpointIndex=saved ?? 0; }
+    }
     this.player.setMaxVelocity(SPEED, 700);
     this.physics.add.collider(this.player, ground);
     this.physics.add.overlap(this.player, chili, () => { chili.disableBody(true, true); this.state.invulnerableUntil = this.time.now + 5000; });
@@ -69,8 +81,8 @@ export class GameScene extends Phaser.Scene {
     }
     const fish = this.physics.add.staticGroup({ classType: Phaser.Physics.Arcade.Sprite });
     fishSpawns.forEach(p => {
-      const f = fish.create(p.x, p.y, 'fish') as Phaser.Physics.Arcade.Sprite;
-      f.play('fish'); f.setSize(24, 18); this.tweens.add({ targets: f, angle: { from: -8, to: 8 }, duration: 700, yoyo: true, repeat: -1 });
+      const f = fish.create(p.x, p.y, this.level.market ? 'market-fish' : 'fish') as Phaser.Physics.Arcade.Sprite;
+      if(!this.level.market) f.play('fish'); f.setSize(24, 18); this.tweens.add({ targets: f, angle: { from: -8, to: 8 }, duration: 700, yoyo: true, repeat: -1 });
     });
     this.physics.add.overlap(this.player, fish, (_player, item) => {
       const f = item as Phaser.Physics.Arcade.Sprite;
@@ -96,9 +108,9 @@ export class GameScene extends Phaser.Scene {
       this.sandals.push({ sprite, ...r, phase: i * 1.7 });
       this.physics.add.overlap(this.player, sprite, () => this.hurt());
     }
-    this.physics.add.overlap(this.player, goal, () => { if (!this.level.boss || this.bossHits >= 5) this.end(true); });
+    this.physics.add.overlap(this.player, goal, () => { if (!this.level.boss || (this.market ? this.market.defeated : this.bossHits >= 5)) this.end(true); });
     this.bossWarning = label(this, 480, 115, '', 22, '#ffe7a0').setOrigin(0.5).setScrollFactor(0).setDepth(22);
-    this.cameras.main.setBounds(0, 0, WORLD_WIDTH, 540).startFollow(this.player, true, 0.08, 0.1, -80, 0).setDeadzone(100, 80);
+    this.cameras.main.setBounds(0, this.level.market?.top ?? 0, WORLD_WIDTH, 540-(this.level.market?.top ?? 0)).startFollow(this.player, true, 0.08, 0.1, -80, 0).setDeadzone(100, 80);
     this.add.rectangle(480, 31, 912, 42, 0x193b3c, 0.94).setScrollFactor(0).setDepth(20).setStrokeStyle(2, 0x6f9177);
     this.hud = label(this, 42, 21, '', 18).setScrollFactor(0).setDepth(21);
     label(this, 918, 22, 'SPACE JUMP   ESC PAUSE   R RETRY', 14, '#b6caaa').setOrigin(1, 0).setScrollFactor(0).setDepth(21);
@@ -129,7 +141,7 @@ export class GameScene extends Phaser.Scene {
     this.time.delayedCall(100, () => this.player.clearTint());
     if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) this.cameras.main.shake(100, 0.002);
     if (this.state.lives === 0) { this.end(false); return; }
-    if (fall) { this.player.setPosition(this.checkpoint, 430); this.player.setVelocity(0, 0); }
+    if (fall) { this.player.setPosition(this.checkpoint, this.checkpointY); this.player.setVelocity(0, 0); }
     else this.player.setVelocity(this.player.flipX ? 160 : -160, -210);
   }
   private end(won: boolean): void {
@@ -142,8 +154,9 @@ export class GameScene extends Phaser.Scene {
   update(_time: number, delta: number): void {
     if (!this.player || this.finished || this.paused) return;
     const time = this.time.now; this.elapsed += delta;
+    this.market?.update(delta);
     const platforms = this.level.platforms.filter(p => p.y === 482);
-    if (this.level.boss && this.player.x > this.level.width - 650 && this.bossHits < 5) {
+    if (!this.market && this.level.boss && this.player.x > this.level.width - 650 && this.bossHits < 5) {
       const cycle = Math.floor(this.elapsed / 2400), phase = this.elapsed % 2400;
       this.bossWarning.setText(phase < 1500 ? 'EMAK: AWAS! Jump over the low sandal!' : `DODGE! ${this.bossHits}/5`);
       if (phase >= 1500 && cycle !== this.bossCycle) {
@@ -153,10 +166,10 @@ export class GameScene extends Phaser.Scene {
         this.physics.add.overlap(this.player, shot, () => this.hurt());
         this.time.delayedCall(1800, () => { shot.destroy(); this.bossHits++; });
       }
-    } else if (this.level.boss && this.bossHits >= 5) this.bossWarning.setText('EMAK CAPEK! Reach the finish →');
+    } else if (!this.market && this.level.boss && this.bossHits >= 5) this.bossWarning.setText('EMAK CAPEK! Reach the finish →');
     const body = this.player.body as Phaser.Physics.Arcade.Body;
     const direction = Number(this.keys.right.isDown || this.keys.d.isDown) - Number(this.keys.left.isDown || this.keys.a.isDown);
-    if (time >= this.hitUntil) this.player.setVelocityX(Phaser.Math.Linear(body.velocity.x, direction * SPEED, Math.min(1, delta / (direction ? 65 : 45))));
+    if (time >= this.hitUntil) this.player.setVelocityX(Phaser.Math.Linear(body.velocity.x, direction * SPEED, Math.min(1, delta / (this.level.market?.slippery && body.blocked.down ? (direction ? 140 : 350) : direction ? 65 : 45))));
     if (direction) this.player.setFlipX(direction < 0);
     const grounded = body.blocked.down;
     if (grounded) this.groundedAt = time;
@@ -173,7 +186,14 @@ export class GameScene extends Phaser.Scene {
     this.wasGrounded = grounded;
     this.player.animate(time < this.hitUntil);
     this.player.setAlpha(time < this.state.invulnerableUntil ? 0.65 : 1);
-    if (body.blocked.down && this.player.y > 420) {
+    if(this.level.market && body.blocked.down) {
+      this.level.market.checkpoints.forEach((cp,i)=>{if(i>this.checkpointIndex&&Math.abs(this.player.x-cp.x)<70&&Math.abs(this.player.y-cp.y)<40){
+        this.checkpointIndex=i;this.checkpoint=cp.x;this.checkpointY=cp.y;
+        progression.saves.data.checkpoints[this.level.id]=i;progression.saves.save();
+        const text=label(this,this.player.x,this.player.y-70,'CHECKPOINT ✓',16);this.time.delayedCall(1500,()=>text.destroy());
+      }});
+    }
+    if (!this.level.market && body.blocked.down && this.player.y > 420) {
       const index = platforms.findIndex(p => this.player.x > p.x + 30 && this.player.x < p.x + p.w - 30);
       if (index > this.checkpointIndex) {
         this.checkpointIndex = index; this.checkpoint = platforms[index].x + 60;
@@ -183,7 +203,7 @@ export class GameScene extends Phaser.Scene {
     }
     if (this.player.y > 580) {
       // Falls must recover even during an existing sandal cooldown.
-      if (this.time.now < this.state.invulnerableUntil) { this.player.setPosition(this.checkpoint, 430).setVelocity(0, 0); }
+      if (this.time.now < this.state.invulnerableUntil) { this.player.setPosition(this.checkpoint, this.checkpointY).setVelocity(0, 0); }
       else this.hurt(true);
     }
     for (const s of this.sandals) {
