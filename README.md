@@ -96,3 +96,27 @@ confirm/cancel reset, pause during a boss attack, and fall after each checkpoint
 Automated checks cover save corruption/fallback, unlock order, rewards, reset,
 world unlock, route geometry, and browser gameplay. Full human playtesting of the
 five levels' difficulty and boss balance remains recommended.
+
+## Shop and achievements
+
+World Map → Toko Mang Ujang offers red bandana (50 fish), sunglasses (100), and
+fisherman hat (150). Select an item to preview, then Buy or Equip/Unequip. One
+cosmetic is equipped at a time. Temporary locally drawn pixel shapes use measured
+per-frame anchors (`src/entities/Cosmetics.ts`); dedicated accessory artwork and
+fine alignment polish are future work. Overlays never change collision bodies.
+
+Each gameplay fish adds one spendable fish and 10 level-score points. Replays can
+earn pickup currency again; one-time completion bonuses remain protected. Existing
+campaign best-fish credits are retained for compatibility. Version-1 saves migrate
+to version 2 without inventing historical lifetime pickup counts. Purchases are
+permanent and balances are derived from earned credits minus owned-item costs.
+Storage failures retain session state. Achievements track 100 lifetime pickups,
+a no-damage clear, and a no-damage boss clear; notification text accompanies unlocks.
+
+Menus: Up/Down or Tab/Shift+Tab moves the white focus outline; Enter/Space activates.
+Escape returns from shop/achievements. Mouse remains supported.
+
+Playtest: earn 50 fish across replays, preview and buy bandana, try buying twice,
+equip and reload, inspect idle/run/jump/fall while facing both directions, unequip,
+check insufficient funds, unlock each achievement, inspect world-map totals, and
+confirm/cancel Reset Save. No real-money payments or network services are used.

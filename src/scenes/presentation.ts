@@ -20,9 +20,27 @@ export function village(scene: Phaser.Scene, width = 960): void {
     far.lineStyle(1, 0x526f62).lineBetween(x, y - 40, x + 155, y - 25);
   }
 }
+const menus = new WeakMap<Phaser.Scene, { entries: { box: Phaser.GameObjects.Rectangle; action: () => void }[]; index: number }>();
 export function button(scene: Phaser.Scene, y: number, text: string, action: () => void): void {
   const b = scene.add.rectangle(480, y, 294, 52, 0xf3be64).setStrokeStyle(3, 0x684a32).setInteractive({ useHandCursor: true });
   const t = label(scene, 480, y, text, 20, '#233b39').setOrigin(0.5);
   b.on('pointerover', () => b.setFillStyle(0xffd98b)); b.on('pointerout', () => b.setFillStyle(0xf3be64));
   b.on('pointerdown', action); t.setDepth(1);
+  let menu = menus.get(scene);
+  if (!menu) {
+    menu = { entries: [], index: 0 }; menus.set(scene, menu);
+    const state = menu;
+    const keyboard = (event: KeyboardEvent) => {
+      if (event.repeat) return;
+      if (['ArrowDown', 'ArrowUp', 'Tab'].includes(event.key)) {
+        event.preventDefault(); state.index = (state.index + (event.key === 'ArrowUp' || event.shiftKey ? -1 : 1) + state.entries.length) % state.entries.length;
+        state.entries.forEach((e, i) => e.box.setStrokeStyle(i === state.index ? 4 : 3, i === state.index ? 0xffffff : 0x684a32));
+      }
+      if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); state.entries[state.index]?.action(); }
+    };
+    scene.input.keyboard?.on('keydown', keyboard);
+    scene.events.once('shutdown', () => { scene.input.keyboard?.off('keydown', keyboard); menus.delete(scene); });
+  }
+  menu.entries.push({ box: b, action });
+  if (menu.entries.length === 1) b.setStrokeStyle(4, 0xffffff);
 }

@@ -29,11 +29,12 @@ export class GameScene extends Phaser.Scene {
   private pauseAt = 0;
   private pauseOverlay!: Phaser.GameObjects.Text;
   private elapsed = 0;
+  private damageTaken = 0;
   private sandals: { sprite: Phaser.Physics.Arcade.Sprite; x: number; y: number; range: number; phase: number }[] = [];
   constructor() { super('GameScene'); }
   create(): void {
     const { platforms, fish: fishSpawns, hazards: sandalRoutes, width: WORLD_WIDTH, goal: finish } = this.level;
-    this.bossCycle = -1; this.bossHits = 0;
+    this.bossCycle = -1; this.bossHits = 0; this.damageTaken = 0;
     this.state = new RunState(); this.finished = false; this.checkpoint = 90; this.sandals = [];
     this.checkpointIndex = 0; this.groundedAt = -Infinity; this.jumpAt = -Infinity;
     this.wasGrounded = false; this.hitUntil = 0; this.paused = false; this.elapsed = 0;
@@ -74,7 +75,10 @@ export class GameScene extends Phaser.Scene {
     this.physics.add.overlap(this.player, fish, (_player, item) => {
       const f = item as Phaser.Physics.Arcade.Sprite;
       if (!f.active) return;
-      this.state.collect(); highScore(this.state.score); f.disableBody(true, true);
+      this.state.collect();
+      const unlocked = progression.saves.collectFish();
+      if (unlocked.length) { const toast = label(this, 480, 150, 'ACHIEVEMENT: 100 FISH!', 22).setOrigin(0.5).setScrollFactor(0).setDepth(30); this.time.delayedCall(2200, () => toast.destroy()); }
+      highScore(this.state.score); f.disableBody(true, true);
       const effect = this.add.sprite(f.x, f.y, 'spark').play('spark').setDepth(8);
       effect.once('animationcomplete', () => effect.destroy());
       for (let i = 0; i < 5; i++) {
@@ -119,6 +123,7 @@ export class GameScene extends Phaser.Scene {
   }
   private hurt(fall = false): void {
     if (this.finished || !this.state.damage(this.time.now)) return;
+    this.damageTaken++;
     this.hitUntil = this.time.now + 220;
     this.player.setTintFill(0xffe8bf);
     this.time.delayedCall(100, () => this.player.clearTint());
@@ -130,8 +135,9 @@ export class GameScene extends Phaser.Scene {
   private end(won: boolean): void {
     if (this.finished) return;
     this.finished = true; this.physics.pause();
-    const stars = won ? progression.complete(this.level.id, this.state.score, this.state.lives) : 0;
-    this.scene.start('ResultScene', { levelId: this.level.id, won, score: this.state.score, stars });
+    const previousAchievements = [...progression.saves.data.achievements];
+    const stars = won ? progression.complete(this.level.id, this.state.score, this.state.lives, this.damageTaken) : 0;
+    this.scene.start('ResultScene', { levelId: this.level.id, won, score: this.state.score, stars, achievements: progression.saves.data.achievements.filter(a => !previousAchievements.includes(a)) });
   }
   update(_time: number, delta: number): void {
     if (!this.player || this.finished || this.paused) return;

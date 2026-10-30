@@ -15,7 +15,6 @@ class EndScene extends Phaser.Scene {
     label(this, 480, 335, `BEST ${highScore(this.score)}  •  ${this.won ? 'SELAMAT! Escape complete' : 'Try a shorter jump to dodge sandals'}`, 15, '#a9c9a1').setOrigin(0.5);
     button(this, 383, 'MAIN LAGI / RESTART', () => this.scene.start('GameScene'));
     label(this, 480, 427, 'ENTER / R to retry    •    ESC for menu', 15, '#a9c9a1').setOrigin(0.5);
-    this.input.keyboard?.once('keydown-ENTER', () => this.scene.start('GameScene'));
     this.input.keyboard?.once('keydown-R', () => this.scene.start('GameScene'));
     this.input.keyboard?.once('keydown-ESC', () => this.scene.start('MainMenuScene'));
   }
