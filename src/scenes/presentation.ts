@@ -9,7 +9,8 @@ export function village(scene: Phaser.Scene, width = 960): void {
   g.fillStyle(0xf8dc9a).fillCircle(760, 95, 42);
   g.fillStyle(0xc6d7b7);
   for (let i = 0; i < width / 170 + 5; i++) g.fillEllipse(i * 170, 280, 270, 210);
-  const far = scene.add.graphics().setScrollFactor(0.35);
+  scene.add.image(0, 482, 'kampung-panorama').setOrigin(0, 1).setScale(3).setScrollFactor(0.25);
+  const far = scene.add.graphics().setScrollFactor(0.35).setAlpha(0.2);
   for (let i = 0; i < width / 150 + 5; i++) {
     const x = i * 155, y = 310 + (i % 3) * 20;
     far.fillStyle(i % 2 ? 0x769a89 : 0x638c81).fillRect(x, y, 120, 190);

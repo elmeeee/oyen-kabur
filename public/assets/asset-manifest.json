@@ -1,0 +1,1078 @@
+{
+  "version": 1,
+  "generator": "scripts/process_assets.py",
+  "pillow_version": "12.3.0",
+  "coordinate_convention": "[left, top, right, bottom) in original source pixels",
+  "background_policy": "Keep original RGBA pixels; only discard pixels outside reviewed source rectangles. Kampung panels remain opaque. No thresholding, color key, inpainting or invented frames.",
+  "sources": [
+    {
+      "path": "assets/raw/oyen-sheet.png",
+      "size": [
+        1983,
+        793
+      ],
+      "mode": "RGBA",
+      "sha256": "7021d8db06f43a4a9585ac7894fc27a4b77a3112a484ad66d7db41f12e65d5ab",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_pixels": 1111842,
+      "partial_alpha_pixels": 460360
+    },
+    {
+      "path": "assets/raw/sandal-sheet.png",
+      "size": [
+        1983,
+        793
+      ],
+      "mode": "RGBA",
+      "sha256": "2b077840f2f9bd5787b434310a2784faadc1b3e77e0f95112009367006249c6b",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_pixels": 777447,
+      "partial_alpha_pixels": 795018
+    },
+    {
+      "path": "assets/raw/items-sheet.png",
+      "size": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "sha256": "7450cd8e4b51d32efe8c5cdd5eeab36a45dd05a0d58d2065f60ce1fda760c743",
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_pixels": 763323,
+      "partial_alpha_pixels": 809541
+    },
+    {
+      "path": "assets/raw/kampung-tileset.png",
+      "size": [
+        1536,
+        1024
+      ],
+      "mode": "RGB",
+      "sha256": "bf52ee5089a8221534bfedfbbba1f2414a7447f34692d3b96e9713f156f0a1da",
+      "alpha_extrema": null,
+      "transparent_pixels": 0,
+      "partial_alpha_pixels": 0
+    }
+  ],
+  "assets": [
+    {
+      "key": "oyen-idle",
+      "kind": "spritesheet",
+      "path": "assets/processed/oyen-idle.png",
+      "source": "oyen-sheet.png",
+      "frame_size": [
+        64,
+        64
+      ],
+      "frame_count": 3,
+      "scale": 0.23622047244094488,
+      "baseline": 60,
+      "frames": [
+        {
+          "source_region": [
+            104,
+            28,
+            305,
+            194
+          ],
+          "destination_region": [
+            8,
+            21,
+            55,
+            60
+          ]
+        },
+        {
+          "source_region": [
+            354,
+            28,
+            554,
+            194
+          ],
+          "destination_region": [
+            8,
+            21,
+            55,
+            60
+          ]
+        },
+        {
+          "source_region": [
+            606,
+            28,
+            805,
+            194
+          ],
+          "destination_region": [
+            8,
+            21,
+            55,
+            60
+          ]
+        }
+      ],
+      "limitations": "",
+      "animation": {
+        "key": "oyen-idle",
+        "frame_rate": 3,
+        "repeat": -1
+      }
+    },
+    {
+      "key": "oyen-run",
+      "kind": "spritesheet",
+      "path": "assets/processed/oyen-run.png",
+      "source": "oyen-sheet.png",
+      "frame_size": [
+        64,
+        64
+      ],
+      "frame_count": 7,
+      "scale": 0.23622047244094488,
+      "baseline": 60,
+      "frames": [
+        {
+          "source_region": [
+            109,
+            211,
+            336,
+            382
+          ],
+          "destination_region": [
+            5,
+            20,
+            59,
+            60
+          ]
+        },
+        {
+          "source_region": [
+            377,
+            214,
+            618,
+            384
+          ],
+          "destination_region": [
+            3,
+            20,
+            60,
+            60
+          ]
+        },
+        {
+          "source_region": [
+            657,
+            214,
+            884,
+            382
+          ],
+          "destination_region": [
+            5,
+            20,
+            59,
+            60
+          ]
+        },
+        {
+          "source_region": [
+            930,
+            220,
+            1169,
+            382
+          ],
+          "destination_region": [
+            4,
+            22,
+            60,
+            60
+          ]
+        },
+        {
+          "source_region": [
+            1199,
+            208,
+            1405,
+            382
+          ],
+          "destination_region": [
+            7,
+            19,
+            56,
+            60
+          ]
+        },
+        {
+          "source_region": [
+            1438,
+            214,
+            1664,
+            384
+          ],
+          "destination_region": [
+            5,
+            20,
+            58,
+            60
+          ]
+        },
+        {
+          "source_region": [
+            1696,
+            204,
+            1911,
+            382
+          ],
+          "destination_region": [
+            6,
+            18,
+            57,
+            60
+          ]
+        }
+      ],
+      "limitations": "",
+      "animation": {
+        "key": "oyen-run",
+        "frame_rate": 10,
+        "repeat": -1
+      }
+    },
+    {
+      "key": "oyen-jump",
+      "kind": "spritesheet",
+      "path": "assets/processed/oyen-jump.png",
+      "source": "oyen-sheet.png",
+      "frame_size": [
+        64,
+        64
+      ],
+      "frame_count": 2,
+      "scale": 0.23622047244094488,
+      "baseline": 60,
+      "frames": [
+        {
+          "source_region": [
+            116,
+            387,
+            347,
+            575
+          ],
+          "destination_region": [
+            4,
+            16,
+            59,
+            60
+          ]
+        },
+        {
+          "source_region": [
+            405,
+            395,
+            639,
+            577
+          ],
+          "destination_region": [
+            4,
+            17,
+            59,
+            60
+          ]
+        }
+      ],
+      "limitations": "",
+      "animation": {
+        "key": "oyen-jump",
+        "frame_rate": 6,
+        "repeat": 0
+      }
+    },
+    {
+      "key": "oyen-fall",
+      "kind": "spritesheet",
+      "path": "assets/processed/oyen-fall.png",
+      "source": "oyen-sheet.png",
+      "frame_size": [
+        64,
+        64
+      ],
+      "frame_count": 1,
+      "scale": 0.23622047244094488,
+      "baseline": 60,
+      "frames": [
+        {
+          "source_region": [
+            405,
+            395,
+            639,
+            577
+          ],
+          "destination_region": [
+            4,
+            17,
+            59,
+            60
+          ]
+        }
+      ],
+      "limitations": "Reuses jump frame 1; no distinct falling pose exists.",
+      "animation": {
+        "key": "oyen-fall",
+        "frame_rate": 1,
+        "repeat": 0
+      }
+    },
+    {
+      "key": "oyen-hurt",
+      "kind": "spritesheet",
+      "path": "assets/processed/oyen-hurt.png",
+      "source": "oyen-sheet.png",
+      "frame_size": [
+        64,
+        64
+      ],
+      "frame_count": 1,
+      "scale": 0.23622047244094488,
+      "baseline": 60,
+      "frames": [
+        {
+          "source_region": [
+            383,
+            599,
+            637,
+            746
+          ],
+          "destination_region": [
+            2,
+            25,
+            62,
+            60
+          ]
+        }
+      ],
+      "limitations": "",
+      "animation": {
+        "key": "oyen-hurt",
+        "frame_rate": 1,
+        "repeat": 0
+      }
+    },
+    {
+      "key": "sandal-fly",
+      "kind": "spritesheet",
+      "path": "assets/processed/sandal-fly.png",
+      "source": "sandal-sheet.png",
+      "frame_size": [
+        64,
+        64
+      ],
+      "frame_count": 6,
+      "scale": 0.27522935779816515,
+      "baseline": null,
+      "frames": [
+        {
+          "source_region": [
+            9,
+            30,
+            178,
+            195
+          ],
+          "destination_region": [
+            8,
+            9,
+            55,
+            54
+          ]
+        },
+        {
+          "source_region": [
+            179,
+            30,
+            368,
+            195
+          ],
+          "destination_region": [
+            6,
+            9,
+            58,
+            54
+          ]
+        },
+        {
+          "source_region": [
+            370,
+            30,
+            588,
+            195
+          ],
+          "destination_region": [
+            2,
+            9,
+            62,
+            54
+          ]
+        },
+        {
+          "source_region": [
+            590,
+            30,
+            774,
+            195
+          ],
+          "destination_region": [
+            6,
+            9,
+            57,
+            54
+          ]
+        },
+        {
+          "source_region": [
+            776,
+            30,
+            966,
+            195
+          ],
+          "destination_region": [
+            6,
+            9,
+            58,
+            54
+          ]
+        },
+        {
+          "source_region": [
+            968,
+            30,
+            1120,
+            195
+          ],
+          "destination_region": [
+            11,
+            9,
+            53,
+            54
+          ]
+        }
+      ],
+      "limitations": "",
+      "animation": {
+        "key": "sandal-fly",
+        "frame_rate": 10,
+        "repeat": -1
+      }
+    },
+    {
+      "key": "sandal-spin",
+      "kind": "spritesheet",
+      "path": "assets/processed/sandal-spin.png",
+      "source": "sandal-sheet.png",
+      "frame_size": [
+        64,
+        64
+      ],
+      "frame_count": 11,
+      "scale": 0.31413612565445026,
+      "baseline": null,
+      "frames": [
+        {
+          "source_region": [
+            14,
+            226,
+            190,
+            377
+          ],
+          "destination_region": [
+            4,
+            8,
+            59,
+            55
+          ]
+        },
+        {
+          "source_region": [
+            218,
+            220,
+            365,
+            380
+          ],
+          "destination_region": [
+            9,
+            7,
+            55,
+            57
+          ]
+        },
+        {
+          "source_region": [
+            382,
+            225,
+            549,
+            380
+          ],
+          "destination_region": [
+            6,
+            7,
+            58,
+            56
+          ]
+        },
+        {
+          "source_region": [
+            564,
+            225,
+            710,
+            380
+          ],
+          "destination_region": [
+            9,
+            7,
+            55,
+            56
+          ]
+        },
+        {
+          "source_region": [
+            724,
+            232,
+            898,
+            380
+          ],
+          "destination_region": [
+            4,
+            9,
+            59,
+            55
+          ]
+        },
+        {
+          "source_region": [
+            902,
+            232,
+            1081,
+            380
+          ],
+          "destination_region": [
+            4,
+            9,
+            60,
+            55
+          ]
+        },
+        {
+          "source_region": [
+            1091,
+            233,
+            1282,
+            380
+          ],
+          "destination_region": [
+            2,
+            9,
+            62,
+            55
+          ]
+        },
+        {
+          "source_region": [
+            1298,
+            233,
+            1473,
+            380
+          ],
+          "destination_region": [
+            4,
+            9,
+            59,
+            55
+          ]
+        },
+        {
+          "source_region": [
+            1493,
+            232,
+            1648,
+            380
+          ],
+          "destination_region": [
+            7,
+            9,
+            56,
+            55
+          ]
+        },
+        {
+          "source_region": [
+            1663,
+            236,
+            1815,
+            380
+          ],
+          "destination_region": [
+            8,
+            9,
+            56,
+            54
+          ]
+        },
+        {
+          "source_region": [
+            1820,
+            229,
+            1971,
+            380
+          ],
+          "destination_region": [
+            8,
+            8,
+            55,
+            55
+          ]
+        }
+      ],
+      "limitations": "",
+      "animation": {
+        "key": "sandal-spin",
+        "frame_rate": 13,
+        "repeat": -1
+      }
+    },
+    {
+      "key": "fish",
+      "kind": "spritesheet",
+      "path": "assets/processed/fish.png",
+      "source": "items-sheet.png",
+      "frame_size": [
+        32,
+        32
+      ],
+      "frame_count": 6,
+      "scale": 0.18421052631578946,
+      "baseline": null,
+      "frames": [
+        {
+          "source_region": [
+            35,
+            47,
+            166,
+            149
+          ],
+          "destination_region": [
+            4,
+            6,
+            28,
+            25
+          ]
+        },
+        {
+          "source_region": [
+            175,
+            53,
+            311,
+            151
+          ],
+          "destination_region": [
+            3,
+            7,
+            28,
+            25
+          ]
+        },
+        {
+          "source_region": [
+            318,
+            47,
+            455,
+            152
+          ],
+          "destination_region": [
+            3,
+            6,
+            28,
+            25
+          ]
+        },
+        {
+          "source_region": [
+            460,
+            61,
+            602,
+            161
+          ],
+          "destination_region": [
+            3,
+            7,
+            29,
+            25
+          ]
+        },
+        {
+          "source_region": [
+            604,
+            58,
+            756,
+            161
+          ],
+          "destination_region": [
+            2,
+            6,
+            30,
+            25
+          ]
+        },
+        {
+          "source_region": [
+            766,
+            56,
+            894,
+            154
+          ],
+          "destination_region": [
+            4,
+            7,
+            28,
+            25
+          ]
+        }
+      ],
+      "limitations": "",
+      "animation": {
+        "key": "fish",
+        "frame_rate": 7,
+        "repeat": -1
+      }
+    },
+    {
+      "key": "heart",
+      "kind": "spritesheet",
+      "path": "assets/processed/heart.png",
+      "source": "items-sheet.png",
+      "frame_size": [
+        24,
+        24
+      ],
+      "frame_count": 4,
+      "scale": 0.1834862385321101,
+      "baseline": null,
+      "frames": [
+        {
+          "source_region": [
+            33,
+            358,
+            141,
+            457
+          ],
+          "destination_region": [
+            2,
+            3,
+            22,
+            21
+          ]
+        },
+        {
+          "source_region": [
+            163,
+            358,
+            272,
+            457
+          ],
+          "destination_region": [
+            2,
+            3,
+            22,
+            21
+          ]
+        },
+        {
+          "source_region": [
+            291,
+            359,
+            398,
+            457
+          ],
+          "destination_region": [
+            2,
+            3,
+            22,
+            21
+          ]
+        },
+        {
+          "source_region": [
+            417,
+            360,
+            526,
+            459
+          ],
+          "destination_region": [
+            2,
+            3,
+            22,
+            21
+          ]
+        }
+      ],
+      "limitations": "",
+      "animation": {
+        "key": "heart",
+        "frame_rate": 4,
+        "repeat": -1
+      }
+    },
+    {
+      "key": "chili",
+      "kind": "spritesheet",
+      "path": "assets/processed/chili.png",
+      "source": "items-sheet.png",
+      "frame_size": [
+        32,
+        32
+      ],
+      "frame_count": 2,
+      "scale": 0.22580645161290322,
+      "baseline": null,
+      "frames": [
+        {
+          "source_region": [
+            31,
+            482,
+            155,
+            596
+          ],
+          "destination_region": [
+            2,
+            3,
+            30,
+            29
+          ]
+        },
+        {
+          "source_region": [
+            172,
+            480,
+            290,
+            597
+          ],
+          "destination_region": [
+            2,
+            3,
+            29,
+            29
+          ]
+        }
+      ],
+      "limitations": "",
+      "animation": {
+        "key": "chili",
+        "frame_rate": 4,
+        "repeat": -1
+      }
+    },
+    {
+      "key": "spark",
+      "kind": "spritesheet",
+      "path": "assets/processed/spark.png",
+      "source": "items-sheet.png",
+      "frame_size": [
+        24,
+        24
+      ],
+      "frame_count": 3,
+      "scale": 0.22727272727272727,
+      "baseline": null,
+      "frames": [
+        {
+          "source_region": [
+            36,
+            775,
+            105,
+            852
+          ],
+          "destination_region": [
+            4,
+            3,
+            20,
+            21
+          ]
+        },
+        {
+          "source_region": [
+            561,
+            766,
+            639,
+            854
+          ],
+          "destination_region": [
+            3,
+            2,
+            21,
+            22
+          ]
+        },
+        {
+          "source_region": [
+            862,
+            764,
+            934,
+            838
+          ],
+          "destination_region": [
+            4,
+            3,
+            20,
+            20
+          ]
+        }
+      ],
+      "limitations": "Three selected sparkle variants, not a complete source-authored effect sequence.",
+      "animation": {
+        "key": "spark",
+        "frame_rate": 12,
+        "repeat": 0
+      }
+    },
+    {
+      "key": "ground",
+      "kind": "image",
+      "path": "assets/processed/ground.png",
+      "source": "kampung-tileset.png",
+      "frame_size": [
+        55,
+        67
+      ],
+      "frame_count": 1,
+      "role": "terrain-fill",
+      "source_regions": [
+        [
+          105,
+          18,
+          160,
+          85
+        ]
+      ],
+      "limitations": "Interior grass/dirt band. Repeated horizontally with visible concept-art seams; no inferred slopes/corners."
+    },
+    {
+      "key": "roof",
+      "kind": "image",
+      "path": "assets/processed/roof.png",
+      "source": "kampung-tileset.png",
+      "frame_size": [
+        76,
+        18
+      ],
+      "frame_count": 1,
+      "role": "terrain-fill",
+      "source_regions": [
+        [
+          864,
+          17,
+          940,
+          35
+        ]
+      ],
+      "limitations": "Interior terracotta ridge band. Repeated horizontally; no seamless-edge guarantee."
+    },
+    {
+      "key": "wall-facade",
+      "kind": "image",
+      "path": "assets/processed/wall-facade.png",
+      "source": "kampung-tileset.png",
+      "frame_size": [
+        75,
+        86
+      ],
+      "frame_count": 1,
+      "role": "decoration-panel",
+      "source_regions": [
+        [
+          505,
+          269,
+          580,
+          355
+        ]
+      ],
+      "limitations": "Opaque wall/door panel, keep rectangular; cannot infer alpha matte from dark outlines."
+    },
+    {
+      "key": "kampung-panorama",
+      "kind": "image",
+      "path": "assets/processed/kampung-panorama.png",
+      "source": "kampung-tileset.png",
+      "frame_size": [
+        715,
+        154
+      ],
+      "frame_count": 1,
+      "role": "parallax-background",
+      "source_regions": [
+        [
+          10,
+          747,
+          122,
+          901
+        ],
+        [
+          127,
+          747,
+          258,
+          901
+        ],
+        [
+          264,
+          747,
+          377,
+          901
+        ],
+        [
+          383,
+          747,
+          516,
+          901
+        ],
+        [
+          523,
+          747,
+          638,
+          901
+        ],
+        [
+          645,
+          747,
+          756,
+          901
+        ]
+      ],
+      "limitations": "Six scenic panels joined after omitting confirmed vertical guide bars; not loop-seamless."
+    }
+  ],
+  "previews": [
+    "assets/previews/contact-sheet.png",
+    "assets/previews/items-sheet-regions.png",
+    "assets/previews/kampung-tileset-regions.png",
+    "assets/previews/oyen-sheet-regions.png",
+    "assets/previews/sandal-sheet-regions.png"
+  ],
+  "limitations": [
+    "No source grid is assumed. Source coordinates are individually reviewed, exclusive-right/bottom crops.",
+    "RGBA sources contain real transparency plus very low-alpha color residue. Alpha is NOT thresholded; RGB/alpha and antialiased edges inside crops are preserved.",
+    "Oyen has 3 idle, 7 run, 2 airborne poses. Fall reuses airborne pose 2. Hurt uses the final tumble only; the ambiguous crouch/landing pose is previewed but not assigned.",
+    "Oyen frames use ONE shared proportional nearest-neighbor scale, centered at x=32 with lowest silhouette baseline y=60. Airborne/tumble poses use silhouette baseline, not inferred anatomical foot tracking.",
+    "Concept poses vary in body proportions. Shared scaling and baseline reduce jitter but cannot make AI-drawn silhouettes anatomically identical.",
+    "Flying/spin trails are part of the original artwork, not background. Frame edges and trails remain mildly inconsistent; flying pose 6 has a close neighboring trail. See source overlays for manual cleanup.",
+    "Final right-edge flying sandal is clipped in the SOURCE and is excluded. Connected third-row flight arcs are ambiguous and are NOT sliced into runtime frames.",
+    "Kampung is opaque RGB. Dark outlines, gaps, guide grid and shadow are not safely separable by color. No black-color deletion is performed.",
+    "Terrain outputs are reviewed rectangular INTERIOR fill bands, not a complete 32x32 tileset or guaranteed seamless Wang/Tiled tiles. Slopes, caps, corners and collision maps are not inferred.",
+    "Kampung parallax is a concatenation of six reviewed scenic panels with black separators omitted. Internal perspective discontinuities remain; it is rendered once, not loop-tiled.",
+    "Wall facade is an opaque architectural panel, not a transparent freestanding prop. Plants/poles/palm silhouettes need a hand-authored matte before runtime use; see kampung review preview.",
+    "Only selected clean fish/heart/chili/spark poses are extracted. Other item rows remain available in raw sheets; no missing frames are generated."
+  ]
+}
