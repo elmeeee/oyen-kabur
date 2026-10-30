@@ -22,7 +22,7 @@ export class WorldMapScene extends Phaser.Scene {
 export class LevelSelectScene extends Phaser.Scene {
   constructor() { super('LevelSelectScene'); }
   create(): void {
-    village(this); label(this, 40, 25, 'WORLD 1 — KAMPUNG OYEN', 26);
+    village(this); label(this, 40, 25, 'WORLD 1 — KAMPUNG BU SRI', 26);
     worlds[0].levelIds.forEach((id, i) => {
       const level = LevelLoader.load(id), record = progression.saves.data.records[id];
       button(this, 110 + i * 72, `${i + 1}. ${level.name}`, () => { if (progression.unlocked(id)) this.scene.start('GameScene', { levelId: id }); });

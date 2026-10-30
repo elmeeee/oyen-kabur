@@ -26,9 +26,9 @@
         "w": 480
       },
       {
-        "x": 2140,
+        "x": 2000,
         "y": 482,
-        "w": 60
+        "w": 200
       },
       {
         "x": 230,
@@ -113,7 +113,7 @@
         "range": 65
       }
     ],
-    "goal": 2100,
+    "goal": 2130,
     "boss": false,
     "objectives": {
       "fish": 3,
@@ -254,7 +254,7 @@
         "range": 65
       }
     ],
-    "goal": 2400,
+    "goal": 2430,
     "boss": false,
     "objectives": {
       "fish": 4,
@@ -414,7 +414,7 @@
         "range": 65
       }
     ],
-    "goal": 2700,
+    "goal": 2730,
     "boss": false,
     "objectives": {
       "fish": 4,
@@ -459,9 +459,9 @@
         "w": 480
       },
       {
-        "x": 3420,
+        "x": 3400,
         "y": 482,
-        "w": 180
+        "w": 200
       },
       {
         "x": 230,
@@ -621,7 +621,7 @@
         "range": 65
       }
     ],
-    "goal": 3500,
+    "goal": 3530,
     "boss": false,
     "objectives": {
       "fish": 6,
@@ -762,7 +762,7 @@
         "range": 65
       }
     ],
-    "goal": 2300,
+    "goal": 2330,
     "boss": true,
     "objectives": {
       "fish": 4,
