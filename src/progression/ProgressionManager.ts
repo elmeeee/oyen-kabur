@@ -9,7 +9,7 @@ export class ProgressionManager {
     const i = world.levelIds.indexOf(id);
     return i === 0 || !!this.saves.data.records[world.levelIds[i - 1]]?.completed;
   }
-  complete(id: string, score: number, lives: number): number {
+  complete(id: string, score: number, lives: number, damageTaken = 1): number {
     if (!this.unlocked(id)) throw new Error('Level locked');
     const level = LevelLoader.load(id);
     if (!Number.isFinite(score) || !Number.isFinite(lives)) throw new Error('Invalid result');
@@ -17,6 +17,7 @@ export class ProgressionManager {
     const stars = 1 + Number(fish >= level.objectives.fish) + Number(lives >= level.objectives.lives);
     const old = this.saves.data.records[id];
     this.saves.data.records[id] = { completed: true, bestScore: Math.max(old?.bestScore ?? 0, fish * 10), stars: Math.max(old?.stars ?? 0, stars), fish: Math.max(old?.fish ?? 0, fish) };
+    if (damageTaken === 0) this.saves.unlock(level.boss ? ['clean-level', 'clean-boss'] : ['clean-level']);
     this.saves.save(); return stars;
   }
 }
