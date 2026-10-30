@@ -11,9 +11,9 @@ export class MainMenuScene extends Phaser.Scene {
     label(this, 480, 156, 'OYEN KABUR!', 62, '#ffc66d').setOrigin(0.5);
     label(this, 480, 208, 'One chubby cat. A stolen fish. A lot of sandals.', 16).setOrigin(0.5);
     this.add.sprite(480, 255, 'oyen-idle').play('oyen-idle').setScale(2);
-    button(this, 345, 'MULAI / START  →', () => this.scene.start('GameScene'));
+    button(this, 345, 'MULAI / START  →', () => this.scene.start('WorldMapScene'));
     label(this, 480, 403, 'A / D or ← →   MOVE     SPACE / ↑   JUMP', 16).setOrigin(0.5);
     label(this, 480, 437, 'Collect fish. Dodge sandals. Reach the pos ronda.', 14, '#a9c9a1').setOrigin(0.5);
-    this.input.keyboard?.once('keydown-ENTER', () => this.scene.start('GameScene'));
+    this.input.keyboard?.once('keydown-ENTER', () => this.scene.start('WorldMapScene'));
   }
 }
