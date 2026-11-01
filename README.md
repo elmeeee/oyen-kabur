@@ -132,3 +132,36 @@ once per cycle to deal damage. Six hits defeat three phases and unlock World 3
 
 Regenerate market art with `python3 scripts/generate_market_art.py` and validate
 with `npm run validate:assets`. See production-plan.md for visual and QA limitations.
+
+## Hutan Bambu / World 3
+
+World 2 completion unlocks five forest levels (11–15): Gerbang Bambu's hidden
+foliage paths, Jembatan Goyang's swinging decks and cracking bamboo, Air Terjun's
+currents and slippery rocks, Sarang Monyet's vertical canopy, and Monyet Sultan.
+Hold jump for higher shelves. Bridges stay level while their suspension swings;
+stand on cracking bamboo for one second and it falls away, returning after 3.5
+seconds once its space is clear. Current arrows show the flow; opposing input
+still works. Monkeys warn for 950ms before throwing aimed bananas.
+
+Sultan has nine health and three phases: banana lanes, jumpable ground-slam waves,
+and marked monkey summons with a slam. Read the warning, dodge, then touch him
+once during each 1.9-second tired window. Defeat clears his attacks and opens the
+exit. Completing level 15 persistently unlocks World 4, which remains future
+content. Checkpoints survive R/reload during an attempt; completing a forest level
+clears its checkpoint so Replay starts at the beginning. Stars and fish rewards
+use the existing progression/economy rules and version-2 save format.
+
+Press **M** or click the lower-right SFX control to mute the four original forest
+sound effects. The choice persists locally with a session fallback. Music is not
+included. Regenerate original forest art/audio with
+`python3 scripts/generate_forest_art.py` (Pillow from `scripts/requirements.txt`).
+The forest manifest lists the palette, frame sizes, origins, animation poses, and
+limitations. Two contact sheets are shipped in `public/assets/forest/`.
+`npm run validate:assets` checks the forest atlases and PCM files alongside all
+existing assets. `npm run test:browser` runs Chromium tests sequentially to keep
+software rendering from competing across browser instances.
+
+Human QA remains required for complete unassisted traversals, secret-route
+readability, bridge timing at different frame rates, monkey/boss difficulty, audio
+comfort, and cosmetic alignment. The original programmatic artwork is integrated
+and reproducible; hand-polished animation and background music remain unfinished.

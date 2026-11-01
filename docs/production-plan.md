@@ -1,5 +1,9 @@
 # Oyen Kabur production plan
 
+Current implementation: Worlds 1–3 are playable. World 3 delivery and automated
+verification are recorded below; the human playtest release gate remains open.
+Earlier checkpoints are retained as history and superseded by runtime deliveries.
+
 ## Audited baseline
 
 Starting commit: d25d745. Phaser 3.90, strict TypeScript, Vite. Five World 1 JSON
@@ -20,8 +24,8 @@ production tileset. No original audio or settings screen exists yet.
 - [x] Correct World 1 finish placement where the goal falls in a gap.
 - [x] Use production world names while preserving IDs and save keys.
 - [ ] World 1: true chase mechanic, explicit boss state machine and final art.
-- [ ] World 2: slippery ground, projectiles, moving carts, vertical nets, three-phase Juragan Lele.
-- [ ] World 3: bamboo platforms, swinging bridges, water currents, monkeys, Monyet Sultan.
+- [x] World 2 runtime: slippery ground, projectiles, moving carts, vertical nets, three-phase Juragan Lele.
+- [x] World 3 runtime: bamboo platforms, swinging bridges, water currents, monkeys, Monyet Sultan.
 - [ ] World 4: docks, moving ships, wind/rain, cranes/cargo, Kapten Bebek.
 - [ ] World 5: guards, traps, vertical tower, gauntlet, multi-phase Raja Kucing Hitam.
 - [ ] Fifteen achievements, settings/audio controls and original SFX.
@@ -136,3 +140,87 @@ is forgiving and permits bypassing optional moving-platform bonuses.
 Remaining polish: dedicated slippery visual variant, richer boss animation, market
 replacement for shared structural scenery, difficulty tuning and full manual QA.
 All five levels and boss runtime now exist; do not describe manual QA as complete.
+
+## World 3 runtime delivery — Hutan Bambu
+
+Branch `production/world3-hutan-bambu` starts at **d749af8**, the merge of PR #8.
+Remote `main` was verified at that exact commit. Both World 2 staging (PR #7) and
+its runtime delivery (PR #8, implementation 2733de4) are ancestors; the staging-only
+notes above are historical. No World 2 branch was assumed merged or cherry-picked.
+
+Five new stable IDs, w3-l1..w3-l5 (campaign levels 11–15), extend the registry:
+
+| Level | Main mechanics | Optional challenge |
+| --- | --- | --- |
+| Gerbang Bambu | Bamboo shelves and layered forest | Foliage reveals a hidden fish path |
+| Jembatan Goyang | Three swinging bridge decks | Two warning/collapse/respawn platforms |
+| Air Terjun | Opposing directional currents, slippery rock bands | Collectibles behind waterfall foliage |
+| Sarang Monyet | Vertical canopy, warned aimed banana throws | Bridge, fragile platform and current combinations |
+| Monyet Sultan | Nine-hit, three-phase state machine | Existing fish/lives star objectives |
+
+`ForestRuntime` is isolated from `MarketRuntime`. Shared GameScene changes add an
+optional forest definition, checkpoint handling, camera bounds and goal gate, and
+recognize Arcade `touching.down` when jumping from dynamic decks. Existing W1–2
+content, cosmetics, achievements and economy remain in place. Main ground routes
+are forgiving; the vertical level's exit requires the canopy climb. Dynamic paths
+are collectible challenges, so waiting on a respawn never strands the player.
+
+Mechanic rules:
+- `SwingingBridge` uses an immovable dynamic Arcade body and velocity-based rider
+  transport. The deck remains horizontal; the suspension ropes describe the swing.
+- Fragile decks warn for 1000ms after the first landing, disappear for at least
+  3500ms, then return only when the respawn space is clear. Pause freezes timers.
+- Current zones add bounded acceleration after input. They do not teleport or
+  replace input. Slippery areas retain momentum and are marked with wet rock art.
+- Monkeys show a 950ms banana warning after 2200ms idle, then aim at the player's
+  release-time position. Projectiles leave the scene and their colliders clean up.
+- Sultan: 1300ms telegraph, 850ms attack, 1900ms recovery, 700ms cooldown. One contact
+  hit per recovery. Three health per phase: two-lane bananas, low slam waves, then
+  two marked summoned monkeys plus a slam. Summons are replaced, not accumulated.
+  HP bar, pose/tint feedback and a surrender transition make the gate readable.
+  Defeat removes all boss attacks and summons before the exit can complete.
+
+Save format remains version 2. Optional forest checkpoints are validated against
+the loaded definition. Version-1 and older version-2 records/economy/cosmetics are
+preserved. Retry/reload retains the attempt checkpoint; successful forest completion
+clears it for a full replay. World 3 completion unlocks World 4 persistently, while
+World 4 remains unavailable until its actual content exists.
+
+Art/audio: `scripts/generate_forest_art.py` reproducibly draws 14 original atlases
+and synthesizes four mono PCM effects. Terrain uses 32px cells, monkeys 64px and
+Sultan 128px. The manifest records palette, origins, frame counts, animations and
+limitations. The full contact sheet and nine-pose boss contact sheet are shipped.
+Nearest filtering and shared player/cosmetic anchors remain unchanged. Forest SFX
+have conservative gain and a persisted M/click mute control with storage fallback.
+No music is included. These are original programmatic pixel assets, not a claim
+of hand-polished final animation or a finished soundtrack.
+
+### World 3 verification and remaining human QA
+
+Automated coverage includes all 15 registered levels, forest route geometry and
+safe checkpoints; version-1/2 compatibility; stars, replay economy, World 4 unlock;
+Sultan phases/cooldowns/vulnerability/defeat; bridge bounds; fragile warning and
+occupied respawn rules; currents; monkey warning timing. Chromium smoke is designed
+to exercise all five forest scenes, keyboard movement/jumps, dynamic deck transport,
+collapse/respawn/pause, input against currents, real-gravity vertical shelf jumps,
+monkey projectiles, persistent checkpoint retry/fall recovery, natural Sultan attack
+cycles and nine recovery contacts, gate completion, unlock reload and replay.
+The browser harness places the player at test fixtures and boss recovery contacts;
+it does not prove a complete unassisted playthrough or a naturally balanced fight.
+
+Required human sign-off remains open: traverse all five levels from start to
+finish without fixtures; test every hidden route, collectible and three-star run;
+judge bridge/fragile timing at varying frame rates; test current stopping distance,
+monkey accuracy and all boss phases without harness repositioning; inspect Oyen's
+cosmetics at every height; assess audio comfort and reduced-motion behavior.
+Review the programmatic art for palette/animation polish and commission music if
+desired. Automated verification does not close the plan's human release gate.
+
+Verified on this branch: Node 24.19.0, Chromium, Pillow 12.3.0; TypeScript + Vite
+production build; 20/20 unit tests; 2/2 sequential Chromium smoke tests; 37 asset
+atlases, four original source hashes and four PCM effects. The W3 browser test
+uses Canvas fallback to avoid headless software WebGL stalls; the existing W1–2
+smoke retains the default renderer. Representative forest, boss recovery and defeat screenshots, plus the original
+contact sheets, were inspected. The browser boss harness
+uses actual jump input for slam waves and supported waiting perches between
+cycles; boss health, phases and timers are never forced in the committed smoke.
