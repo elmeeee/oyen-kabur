@@ -9,6 +9,8 @@ manifest = json.loads((ROOT / 'assets/asset-manifest.json').read_text())
 manifest['assets'] += json.loads((ROOT / 'assets/market/manifest.json').read_text())['assets']
 forest = json.loads((ROOT / 'assets/forest/manifest.json').read_text())
 manifest['assets'] += forest['assets']
+harbor = json.loads((ROOT / 'assets/harbor/manifest.json').read_text())
+manifest['assets'] += harbor['assets']
 keys = set()
 for source in manifest['sources']:
     path = ROOT / source['path']
@@ -40,3 +42,11 @@ for a in forest['audio']:
         assert sound.getframerate() == a['sample_rate'] and sound.getsampwidth() == 2
         assert 0 < sound.getnframes() / sound.getframerate() <= 1
 print(f"Validated {len(forest['audio'])} original PCM sound effects and forest animation frames.")
+
+for frames in harbor['boss_frames'].values():
+    assert all(0 <= f < 9 for f in frames)
+for a in harbor['assets']:
+    assert a['origin'] == [0.5, 0.5]
+    if 'animation' in a:
+        assert a['animation']['frame_rate'] > 0 and a['frame_count'] > 1
+print(f"Validated {len(harbor['assets'])} harbor atlases and Captain animation frame references.")

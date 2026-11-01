@@ -1,6 +1,6 @@
 # Oyen Kabur production plan
 
-Current implementation: Worlds 1–3 are playable. World 3 delivery and automated
+Current implementation: Worlds 1–4 are playable. World 4 delivery and automated
 verification are recorded below; the human playtest release gate remains open.
 Earlier checkpoints are retained as history and superseded by runtime deliveries.
 
@@ -26,7 +26,7 @@ production tileset. No original audio or settings screen exists yet.
 - [ ] World 1: true chase mechanic, explicit boss state machine and final art.
 - [x] World 2 runtime: slippery ground, projectiles, moving carts, vertical nets, three-phase Juragan Lele.
 - [x] World 3 runtime: bamboo platforms, swinging bridges, water currents, monkeys, Monyet Sultan.
-- [ ] World 4: docks, moving ships, wind/rain, cranes/cargo, Kapten Bebek.
+- [x] World 4 runtime: docks, moving ships, wind/rain, cranes/cargo, Kapten Bebek.
 - [ ] World 5: guards, traps, vertical tower, gauntlet, multi-phase Raja Kucing Hitam.
 - [ ] Fifteen achievements, settings/audio controls and original SFX.
 - [ ] Five-world art generation, metadata, contact sheets, integration and validation.
@@ -224,3 +224,101 @@ smoke retains the default renderer. Representative forest, boss recovery and def
 contact sheets, were inspected. The browser boss harness
 uses actual jump input for slam waves and supported waiting perches between
 cycles; boss health, phases and timers are never forced in the committed smoke.
+
+## World 4 runtime delivery — Pelabuhan Oyen
+
+Branch `production/world4-pelabuhan-oyen` starts from **9c7b445**, remote main's merge
+of World 3 PR #9. World 3 implementation 73ded00 is a verified ancestor. Existing
+World 1–3 definitions and their physics constants remain unchanged. World 3 tests
+now expect the implemented World 4 to be available; their earlier-world fixtures
+explicitly complete Worlds 1–2 instead of accidentally including later worlds.
+
+Five stable definitions w4-l1..w4-l5 (campaign levels 16–20) are registered:
+
+| Level | Implemented behavior |
+| --- | --- |
+| Dermaga Pagi | Dock gaps, small bobbing boats, water recovery, warned anchor sentries |
+| Kapal Bergoyang | Traveling boats with independent wave bob, upper collectible routes |
+| Badai Laut | Opposing wind zones, animated rain, fixed warned lightning columns |
+| Gudang Pelabuhan | Ascending cargo shelves, vertical camera, two moving crane decks |
+| Kapten Bebek | Nine-hit encounter with anchor, water-wave and ship-charge phases |
+
+`HarborRuntime` is separate from the market and forest runtimes. GameScene adds only
+an optional harbor theme/runtime, shared checkpoint selection, goal gate and water
+recovery hook. `MovingDeck` supports boats and cranes through the same deterministic
+translation model and direct-controlled immovable Arcade bodies, friction-based rider transport and
+one-way collisions. Decks never rotate their collision rectangles. Crane art extends
+its lattice without stretching source pixels; cables join the source boom. Static
+cargo shelves provide a reachable critical route alongside bonus crane paths.
+Ground-route gaps stay within the actual SPEED/JUMP/GRAVITY reachability envelope.
+
+Water hazards are explicit rectangles below dock gaps. Recovery applies the existing
+life/damage rules and still returns Oyen safely during invulnerability. Wind adds
+bounded acceleration after input rather than replacing controls. Lightning uses
+2800ms nearby idle, a full 1500ms visible warning, and a 250ms fixed column strike;
+a stalled frame cannot skip the warning. Lightning has no random last-second aiming,
+full-screen flash or camera shake. Rain, decks, projectiles and weather clocks pause.
+Duck sentries use an 1100ms anchor warning after 2400ms idle and a ballistic throw.
+
+Kapten Bebek: three health per phase, 1500ms telegraph, 1100ms attack, 2000ms recovery,
+650ms cooldown. Phase 1 throws a gravity-driven anchor; phase 2 sends a low wave;
+phase 3 launches a larger charging ship. All attacks use readable unique art and
+physical overlap hitboxes. Only one contact hit counts per exposed recovery;
+attack contact hurts Oyen. The HP bar, attack cues, hurt pose/tint and surrendered
+pose expose encounter state. Defeat destroys remaining attacks before opening the
+exit. The browser harness waits through actual clocks and never forces boss state
+or health; it positions the player at fixtures and recovery contacts, so it does not
+establish unassisted fight balance.
+
+Save version 2 remains compatible with versions 1 and 2. Harbor checkpoint indexes
+are validated against their definitions. Existing W1–3 records, forest checkpoints,
+owned cosmetics, equipment, achievements and fish economy are preserved. Completion
+clears only the finished harbor attempt's checkpoint. Ratings/replays use the existing
+three-star and protected completion-reward rules. Kapten completion unlocks World 5
+persistently; World 5 stays unavailable until five actual levels are implemented.
+
+Art: 17 original reproducible Pillow-generated atlases, a full contact sheet and a
+nine-pose boss sheet in `public/assets/harbor/`. The manifest records palette,
+32px terrain cells, 64px sailors, 128px boss frames, center origins, animation counts
+and limitations. Docks, crates, containers, boats, cargo, lattice crane, anchors,
+water waves, rain, lightning, sailors, Captain, hostile ships, ocean/distant ships,
+harbor buildings, buoys and exit gate are integrated with nearest filtering. The
+player and shared fish/chili/hearts remain the existing assets. No external source
+art, credentials, audio or services are required. New music/audio and hand-polished
+animation remain unfinished; these are original programmatic assets, not final-art
+or soundtrack claims.
+
+Required human QA remains open: traverse all five levels without fixtures; inspect
+critical takeoff margins and every fish/star route; ride/jump from boats and cranes
+through full motion cycles and varying frame rates; judge wind responsiveness,
+lightning reaction time and the natural three-phase boss fight; test pause/retry/
+reload around water, lightning and boss attacks; inspect cosmetics, sprite feet,
+parallax and rain readability. Automated tests do not close the human release gate.
+
+### World 4 verified results
+
+Final checks passed on Node 24.19.0 with Chromium and Pillow 12.3.0:
+- `npm run build`: strict TypeScript and production Vite bundle.
+- `npm test`: 26/26 tests, including all earlier-world suites.
+- `npm run validate:assets`: 54 atlases, four original source hashes, four existing
+  PCM effects, plus harbor animation/origin references.
+- `npm run test:browser`: 3/3 sequential smoke tests across Worlds 1–4. The harbor
+  run verifies all five goals, boat/crane transport and jumping, water/cooldown
+  recovery, opposing wind input, the full lightning warning and strike, pause,
+  real-gravity cargo shelf jumps, checkpoint retry/fall recovery, all three natural
+  Captain attack types and nine recovery hits, attack-contact damage, surrender,
+  persistent World 5 unlock and replay. No boss state or health is forced.
+- Harbor generator rerun reproduced every atlas, manifest and contact sheet
+  byte-for-byte. Contact sheets and representative boat, storm, warehouse and
+  Captain recovery/defeat screenshots were inspected.
+
+Browser fixtures deliberately reposition Oyen for focused collision/progression
+checks. They do not replace the unassisted traversal and balance QA listed above.
+The older browser smoke now waits for actual menu readiness and simulated movement
+instead of assuming asset loading or software rendering completes within a fixed
+wall-clock delay. Harbor/forest smoke uses Canvas fallback; the earlier-world smoke
+keeps the default renderer. The lower second boat in Kapal Bergoyang preserves rider
+headroom beneath a container shelf; tests check all boat/crane motion phases for
+standing clearance. Moving decks use Phaser direct control to avoid velocity-chasing
+oscillation around wave turns. Parallax backgrounds keep a fixed vertical horizon
+and integer pixel scaling during the warehouse climb.

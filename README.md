@@ -72,8 +72,8 @@ During gameplay Escape now pauses instead of returning to the menu. Result scree
 
 Start opens World Map, then Level Select. Enter selects World 1 / its first level;
 click any unlocked level to replay it. Complete levels in order. The World 1 boss
-unlocks World 2, which is explicitly marked as future content (Worlds 2–5 are not
-playable yet). All five World 1 layouts live in `src/data/world1.json` and use the
+unlocks World 2. Worlds 1–4 now each have five playable levels; World 5 remains
+future content. All five World 1 layouts live in `src/data/world1.json` and use the
 same GameScene, player, assets and physics.
 
 Stars: one for finishing, one for the level's fish objective, one for its remaining
@@ -127,8 +127,7 @@ Clear World 1 to unlock five market levels. Slippery floors retain momentum;
 ride carts for elevated fish; jump vendor projectiles and crates. Warehouse nets
 show a warning before dropping. Warehouse checkpoints save your ascent across
 reloads. Juragan cycles telegraph → attack → recovery; touch him during recovery
-once per cycle to deal damage. Six hits defeat three phases and unlock World 3
-(future content). Escape pauses encounters and R retries from the saved checkpoint.
+once per cycle to deal damage. Six hits defeat three phases and unlock the playable World 3. Escape pauses encounters and R retries from the saved checkpoint.
 
 Regenerate market art with `python3 scripts/generate_market_art.py` and validate
 with `npm run validate:assets`. See production-plan.md for visual and QA limitations.
@@ -146,8 +145,7 @@ still works. Monkeys warn for 950ms before throwing aimed bananas.
 Sultan has nine health and three phases: banana lanes, jumpable ground-slam waves,
 and marked monkey summons with a slam. Read the warning, dodge, then touch him
 once during each 1.9-second tired window. Defeat clears his attacks and opens the
-exit. Completing level 15 persistently unlocks World 4, which remains future
-content. Checkpoints survive R/reload during an attempt; completing a forest level
+exit. Completing level 15 persistently unlocks the playable World 4. Checkpoints survive R/reload during an attempt; completing a forest level
 clears its checkpoint so Replay starts at the beginning. Stars and fish rewards
 use the existing progression/economy rules and version-2 save format.
 
@@ -165,3 +163,32 @@ Human QA remains required for complete unassisted traversals, secret-route
 readability, bridge timing at different frame rates, monkey/boss difficulty, audio
 comfort, and cosmetic alignment. The original programmatic artwork is integrated
 and reproducible; hand-polished animation and background music remain unfinished.
+
+## Pelabuhan Oyen / World 4
+
+Clear Hutan Bambu to unlock levels 16–20: Dermaga Pagi, Kapal Bergoyang, Badai Laut,
+Gudang Pelabuhan, and Kapten Bebek. Docks have marked water gaps; falling into water
+returns Oyen to the latest safe checkpoint and costs a life unless a damage cooldown
+is already active. Boats move horizontally and bob with the waves. Crane cargo decks
+lift Oyen and allow normal jumping; all Arcade collision decks remain level.
+
+Wind arrows show direction. Opposing input remains effective. Lightning columns
+stay at fixed positions: after the **PETIR!** warning you have 1.5 seconds to leave
+the column before its 250ms strike. Rain and weather timers freeze during pause;
+lightning never uses a full-screen flash. Dock sailors warn before throwing anchors.
+
+Kapten Bebek has nine health and three phases: arcing anchor throws, low water waves,
+and charging ships. Read each telegraph, avoid the attack, then touch Kapten once
+during the two-second exposed window. Defeat clears the attacks and opens the exit.
+Finishing level 20 persistently unlocks World 5, which remains future content.
+Checkpoints persist during attempts; completing a harbor level clears its checkpoint
+for a full replay. Earlier saves, cosmetics, achievements and fish rewards remain
+compatible with save version 2.
+
+Generate original harbor art with `python3 scripts/generate_harbor_art.py`. Its
+manifest and two contact sheets live in `public/assets/harbor/`; the existing asset
+validator checks all 17 harbor atlases. Terrain cells are 32px, sailors 64px, and
+Kapten's nine poses use 128px frames. These integrated programmatic pixel assets
+still need human animation/art-direction polish. Harbor music/audio is not added.
+Full unassisted traversal, boat/crane timing, lightning fairness, boss difficulty,
+three-star routes and cosmetic alignment still require human playtesting.

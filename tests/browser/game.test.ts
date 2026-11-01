@@ -11,14 +11,6 @@ test('playable game flow in Chromium', { timeout: 60000 }, async () => {
     for (let i = 0; i < 50; i++) {
       try { await page.goto('http://127.0.0.1:4178'); break; } catch { await new Promise(r => setTimeout(r, 100)); }
     }
-    await page.waitForFunction(async () => {
-      // @ts-expect-error Vite serves the game module directly for integration inspection.
-      const { game } = await import('/src/main.ts');
-      return game.scene.isActive('MainMenuScene');
-    });
-    await page.keyboard.press('Enter'); await page.waitForTimeout(100);
-    await page.keyboard.press('Enter'); await page.waitForTimeout(100);
-    await page.keyboard.press('Enter'); await page.waitForTimeout(600);
     // Read engine state without adding a production debug API.
     const inspect = async (expression: string) => page.evaluate(async expression => {
       // @ts-expect-error Runtime Vite module URL.
@@ -26,6 +18,20 @@ test('playable game flow in Chromium', { timeout: 60000 }, async () => {
       const scene = game.scene.getScene('GameScene');
       return new Function('scene', 'game', `return (${expression})`)(scene, game);
     }, expression);
+    const waitFor = async (expression: string) => {
+      const deadline=Date.now()+15000;
+      while(!(await inspect(expression))) { assert.ok(Date.now()<deadline,`Timed out: ${expression}`); await page.waitForTimeout(35); }
+    };
+    const advance = async (ms: number) => inspect(`new Promise((resolve,reject)=>{
+      let elapsed=0;
+      const timer=setTimeout(()=>{scene.events.off('postupdate',tick);reject(Error('Scene did not advance'));},15000);
+      const tick=(_time,delta)=>{elapsed+=delta;if(elapsed>=${ms}){scene.events.off('postupdate',tick);clearTimeout(timer);resolve();}};
+      scene.events.on('postupdate',tick);
+    })`);
+    await waitFor('game.scene.getScene("MainMenuScene").children.list.some(c=>c.input?.enabled)');
+    await page.keyboard.press('Enter'); await waitFor('game.scene.isActive("WorldMapScene")');
+    await page.keyboard.press('Enter'); await waitFor('game.scene.isActive("LevelSelectScene")');
+    await page.keyboard.press('Enter'); await waitFor('game.scene.isActive("GameScene")'); await advance(600);
     await page.keyboard.press('Escape');
     const pausedX = await inspect('scene.player.x');
     await page.waitForTimeout(200);
@@ -34,10 +40,12 @@ test('playable game flow in Chromium', { timeout: 60000 }, async () => {
     await page.keyboard.press('Escape');
     assert.equal(await inspect('scene.paused'), false);
     const startX = await inspect('scene.player.x') as number;
-    await page.keyboard.down('d'); await page.waitForTimeout(500); await page.keyboard.up('d');
+    await page.keyboard.down('d'); await advance(500); await page.keyboard.up('d');
     assert.ok((await inspect('scene.player.x') as number) > startX + 60);
+    // Take off from clear ground; the movement check can finish under a low roof.
+    await inspect('(scene.player.body.reset(90,454),scene.player.setVelocity(0,0),true)'); await advance(100);
     const groundY = await inspect('scene.player.y') as number;
-    await page.keyboard.down('Space'); await page.waitForTimeout(180);
+    await page.keyboard.down('Space'); await advance(180);
     await page.keyboard.up('Space');
     assert.ok((await inspect('scene.player.y') as number) < groundY - 30);
     await inspect('(scene.player.setPosition(300, 370).setVelocity(0, 0), true)');
