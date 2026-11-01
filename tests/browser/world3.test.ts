@@ -29,7 +29,7 @@ test('World 3 runtime: physics, five levels, natural Sultan cycle, persistent un
         await page.waitForTimeout(35);
       }
     };
-    await waitFor('game.scene.isActive("MainMenuScene")');
+    await waitFor('game.scene.getScene("MainMenuScene").children.list.some(c=>c.input?.enabled)');
     // Software rendering can run below 60fps; hold controls for simulated game time.
     const advance = async (ms: number) => inspect(`new Promise((resolve,reject)=>{
       const timer=setTimeout(()=>{scene.events.off('postupdate',tick);reject(new Error('Scene did not advance'));},15000);
@@ -159,7 +159,7 @@ test('World 3 runtime: physics, five levels, natural Sultan cycle, persistent un
     await finish(); assert.equal(await inspect('progression.worldUnlocked("w4")'),true);
     await page.reload(); await page.waitForTimeout(500);
     assert.equal(await inspect('progression.worldUnlocked("w4")'),true);
-    assert.equal(await inspect('progression.unlocked("w4-l1")'),false);
+    assert.equal(await inspect('progression.unlocked("w4-l1")'),true);
     for(let i=1;i<=5;i++) assert.equal(await inspect(`progression.saves.data.records['w3-l${i}'].completed`),true);
     await start(4); assert.equal(await inspect('scene.checkpointIndex'),0);
     assert.deepEqual(errors,[]);

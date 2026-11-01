@@ -13,7 +13,7 @@ function memory(initial: unknown = null): StorageAdapter {
 }
 test('five distinct forest levels have reachable static routes, objectives and safe persistent checkpoints', () => {
   assert.equal(forest.length, 5); assert.ok(worlds.find(w => w.id === 'w3')?.available);
-  assert.equal(worlds.find(w => w.id === 'w4')?.available, false);
+  assert.equal(worlds.find(w => w.id === 'w4')?.available, true);
   for (const [i, l] of forest.entries()) {
     assert.equal(l.id, `w3-l${i+1}`); assert.equal(LevelLoader.load(l.id), l);
     const f = l.forest!;
@@ -40,7 +40,7 @@ test('five distinct forest levels have reachable static routes, objectives and s
 test('forest completion, stars, replay economy and World 4 unlock survive reload without unlocking unshipped content', () => {
   const storage = memory(), saves = new SaveManager(storage), p = new ProgressionManager(saves);
   assert.equal(p.unlocked('w3-l1'), false);
-  for (const l of levels.filter(l => l.worldId !== 'w3')) p.complete(l.id, 0, 3);
+  for (const l of levels.filter(l => ['w1','w2'].includes(l.worldId))) p.complete(l.id, 0, 3);
   assert.ok(p.unlocked('w3-l1')); assert.equal(p.worldUnlocked('w4'), false);
   for (const l of forest) {
     assert.equal(p.complete(l.id, l.fish.length*10, 3, 0), 3);
@@ -53,7 +53,7 @@ test('forest completion, stars, replay economy and World 4 unlock survive reload
   const restored = new SaveManager(storage);
   assert.deepEqual(restored.data, saves.data);
   assert.ok(new ProgressionManager(restored).worldUnlocked('w4'));
-  assert.equal(new ProgressionManager(restored).unlocked('w4-l1'), false);
+  assert.equal(new ProgressionManager(restored).unlocked('w4-l1'), true);
 });
 test('v1/v2 fixtures retain W1–2 records, purchased cosmetics, equipment and achievements; reject bad forest checkpoints', () => {
   const record = { completed: true, bestScore: 10, stars: 2, fish: 1 };

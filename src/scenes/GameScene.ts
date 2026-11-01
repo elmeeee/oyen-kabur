@@ -1,3 +1,4 @@
+import { HarborRuntime } from '../world4/HarborRuntime';
 import { ForestRuntime } from '../world3/ForestRuntime';
 import { MarketRuntime } from '../world2/MarketRuntime';
 import { LevelLoader } from '../progression/registry';
@@ -18,6 +19,7 @@ export class GameScene extends Phaser.Scene {
   }
   private market?: MarketRuntime;
   private forest?: ForestRuntime;
+  private harbor?: HarborRuntime;
   private checkpointY = 430;
   private player!: Player;
   private keys!: Record<'left' | 'right' | 'a' | 'd' | 'space' | 'up', Phaser.Input.Keyboard.Key>;
@@ -44,38 +46,44 @@ export class GameScene extends Phaser.Scene {
     this.checkpointIndex = 0; this.groundedAt = -Infinity; this.jumpAt = -Infinity;
     this.wasGrounded = false; this.hitUntil = 0; this.paused = false; this.elapsed = 0;
     this.time.paused = false; this.physics.resume(); this.tweens.resumeAll(); this.anims.resumeAll();
-    this.market = undefined; this.forest = undefined; this.checkpointY = 430;
-    if (!this.level.forest) village(this, WORLD_WIDTH);
-    else {
+    this.market = undefined; this.forest = undefined; this.harbor = undefined; this.checkpointY = 430;
+    if (!this.level.forest && !this.level.harbor) village(this, WORLD_WIDTH);
+    else if (this.level.forest) {
       this.cameras.main.setBackgroundColor('#193833');
       this.add.tileSprite(0, this.level.forest.top, WORLD_WIDTH * 2, 900 - this.level.forest.top, 'forest-background').setOrigin(0).setScrollFactor(.25).setTileScale(3);
       this.add.tileSprite(0, this.level.forest.top, WORLD_WIDTH * 2, 900 - this.level.forest.top, 'forest-mist').setOrigin(0).setScrollFactor(.5).setTileScale(3);
     }
+    if (this.level.harbor) {
+      this.cameras.main.setBackgroundColor('#83b8b3');
+      this.add.tileSprite(0, 0, WORLD_WIDTH * 2, 540, 'harbor-ocean').setOrigin(0).setScrollFactor(.2, 0).setTileScale(3);
+      this.add.tileSprite(0, 260, WORLD_WIDTH * 2, 360, 'harbor-buildings').setOrigin(0).setScrollFactor(.4, 0).setTileScale(2);
+    }
     if(this.level.market) this.add.tileSprite(0, 0, WORLD_WIDTH, 540, 'market-background').setOrigin(0).setScrollFactor(0.3);
-    this.physics.world.setBounds(0, (this.level.market?.top ?? this.level.forest?.top ?? 0)-100, WORLD_WIDTH, 900-(this.level.market?.top ?? this.level.forest?.top ?? 0));
+    this.physics.world.setBounds(0, (this.level.market?.top ?? this.level.forest?.top ?? this.level.harbor?.top ?? 0)-100, WORLD_WIDTH, 900-(this.level.market?.top ?? this.level.forest?.top ?? this.level.harbor?.top ?? 0));
     const ground = this.physics.add.staticGroup();
     for (const p of platforms) {
-      if (p.y < 482 && !this.level.forest) {
+      if (p.y < 482 && !this.level.forest && !this.level.harbor) {
         this.add.rectangle(p.x + p.w / 2, p.y + 16, p.w - 16, 482 - p.y, 0xc5b681).setOrigin(0.5, 0);
         this.add.rectangle(p.x + p.w / 2, p.y + 65, 26, 42, 0x416766);
       }
-      const tile = this.add.tileSprite(p.x, p.y, p.w, p.y === 482 ? 58 : 16, this.level.forest ? (p.y === 482 ? 'forest-earth' : this.level.forest.slippery.some(z => p.x < z.x + z.width && p.x + p.w > z.x) ? 'forest-rock' : 'forest-bamboo') : this.level.market ? 'market-stone' : p.y === 482 ? 'ground' : 'roof').setOrigin(0);
+      const tile = this.add.tileSprite(p.x, p.y, p.w, p.y === 482 ? 58 : 16, this.level.harbor ? (p.y === 482 ? 'harbor-dock' : 'harbor-container') : this.level.forest ? (p.y === 482 ? 'forest-earth' : this.level.forest.slippery.some(z => p.x < z.x + z.width && p.x + p.w > z.x) ? 'forest-rock' : 'forest-bamboo') : this.level.market ? 'market-stone' : p.y === 482 ? 'ground' : 'roof').setOrigin(0);
       ground.add(tile); (tile.body as Phaser.Physics.Arcade.StaticBody).updateFromGameObject();
     }
     // Finish landmark, visible from the ground route and final roof.
-    if (!this.level.forest) {
+    if (!this.level.forest && !this.level.harbor) {
     this.add.rectangle(finish, 425, 135, 114, 0x6e8b69);
     this.add.triangle(finish, 351, 0, 40, 90, 0, 180, 40, 0x9c503b);
     label(this, finish, 385, 'POS RONDA', 16, '#fff0c0').setOrigin(0.5);
     label(this, finish, 414, 'FINISH →', 16, '#fff0c0').setOrigin(0.5);
     this.add.image(finish, 445, 'wall-facade').setDisplaySize(100, 70);
     } else {
-      this.add.image(finish, this.level.forest.goalY - 12, 'forest-gate');
-      label(this, finish, this.level.forest.goalY - 90, 'HUTAN EXIT →', 16).setOrigin(.5);
+      const theme = this.level.forest ?? this.level.harbor!;
+      this.add.image(finish, theme.goalY - 12, this.level.harbor ? 'harbor-gate' : 'forest-gate');
+      label(this, finish, theme.goalY - 90, this.level.harbor ? 'HARBOR EXIT →' : 'HUTAN EXIT →', 16).setOrigin(.5);
     }
     const chili = this.physics.add.sprite(Math.min(1530, finish - 300), 450, 'chili').play('chili');
     chili.body.setAllowGravity(false); chili.setSize(22, 22);
-    const goal = this.add.zone(finish, this.level.market?.goalY ?? this.level.forest?.goalY ?? 430, 120, 104); this.physics.add.existing(goal, true);
+    const goal = this.add.zone(finish, this.level.market?.goalY ?? this.level.forest?.goalY ?? this.level.harbor?.goalY ?? 430, 120, 104); this.physics.add.existing(goal, true);
     this.player = new Player(this, 90, 445);
     if(this.level.market) {
       this.market = new MarketRuntime(this, this.level, this.player, () => this.hurt());
@@ -85,13 +93,14 @@ export class GameScene extends Phaser.Scene {
       if(cp) { this.player.setPosition(cp.x,cp.y); this.checkpoint=cp.x; this.checkpointY=cp.y; this.checkpointIndex=saved ?? 0; }
     }
     if(this.level.forest) this.forest = new ForestRuntime(this, this.level, this.player, () => this.hurt());
-    const checkpointDefinition = this.level.market ?? this.level.forest;
-    if(this.level.forest && checkpointDefinition) {
+    const checkpointDefinition = this.level.market ?? this.level.forest ?? this.level.harbor;
+    if((this.level.forest || this.level.harbor) && checkpointDefinition) {
       const saved = progression.saves.data.checkpoints[this.level.id] ?? 0;
       const cp = checkpointDefinition.checkpoints[saved];
       if(cp) { this.player.setPosition(cp.x, cp.y); this.checkpoint=cp.x; this.checkpointY=cp.y; this.checkpointIndex=saved; }
     }
-    this.player.setMaxVelocity(this.forest ? SPEED + 80 : SPEED, 700);
+    if(this.level.harbor) this.harbor = new HarborRuntime(this, this.level, this.player, () => this.hurt(), () => this.recoverWater());
+    this.player.setMaxVelocity(this.forest || this.harbor ? SPEED + 80 : SPEED, 700);
     this.physics.add.collider(this.player, ground);
     this.physics.add.overlap(this.player, chili, () => { chili.disableBody(true, true); this.state.invulnerableUntil = this.time.now + 5000; });
     for (let i = 0; i < 3; i++) {
@@ -127,13 +136,13 @@ export class GameScene extends Phaser.Scene {
       this.sandals.push({ sprite, ...r, phase: i * 1.7 });
       this.physics.add.overlap(this.player, sprite, () => this.hurt());
     }
-    this.physics.add.overlap(this.player, goal, () => { if (!this.level.boss || (this.forest ? this.forest.defeated : this.market ? this.market.defeated : this.bossHits >= 5)) this.end(true); });
+    this.physics.add.overlap(this.player, goal, () => { if (!this.level.boss || (this.harbor ? this.harbor.defeated : this.forest ? this.forest.defeated : this.market ? this.market.defeated : this.bossHits >= 5)) this.end(true); });
     this.bossWarning = label(this, 480, 115, '', 22, '#ffe7a0').setOrigin(0.5).setScrollFactor(0).setDepth(22);
-    this.cameras.main.setBounds(0, this.level.market?.top ?? this.level.forest?.top ?? 0, WORLD_WIDTH, 540-(this.level.market?.top ?? this.level.forest?.top ?? 0)).startFollow(this.player, true, 0.08, 0.1, -80, 0).setDeadzone(100, 80);
+    this.cameras.main.setBounds(0, this.level.market?.top ?? this.level.forest?.top ?? this.level.harbor?.top ?? 0, WORLD_WIDTH, 540-(this.level.market?.top ?? this.level.forest?.top ?? this.level.harbor?.top ?? 0)).startFollow(this.player, true, 0.08, 0.1, -80, 0).setDeadzone(100, 80);
     this.add.rectangle(480, 31, 912, 42, 0x193b3c, 0.94).setScrollFactor(0).setDepth(20).setStrokeStyle(2, 0x6f9177);
     this.hud = label(this, 42, 21, '', 18).setScrollFactor(0).setDepth(21);
     label(this, 918, 22, 'SPACE JUMP   ESC PAUSE   R RETRY', 14, '#b6caaa').setOrigin(1, 0).setScrollFactor(0).setDepth(21);
-    const hint = label(this, 90, 370, `${this.level.name} →\nStars: finish • ${this.level.objectives.fish} fish • ${this.level.objectives.lives}+ lives`, 14, this.level.forest ? '#f5dfaa' : '#243f3b');
+    const hint = label(this, 90, 370, `${this.level.name} →\nStars: finish • ${this.level.objectives.fish} fish • ${this.level.objectives.lives}+ lives`, 14, this.level.forest || this.level.harbor ? '#f5dfaa' : '#243f3b');
     this.time.delayedCall(6000, () => hint.destroy());
     this.keys = this.input.keyboard!.addKeys({ left: 'LEFT', right: 'RIGHT', a: 'A', d: 'D', space: 'SPACE', up: 'UP' }) as typeof this.keys;
     this.input.keyboard!.on('keydown-R', () => this.scene.restart());
@@ -152,6 +161,11 @@ export class GameScene extends Phaser.Scene {
       }
     });
   }
+  private recoverWater(): void {
+    // Water must recover during an existing damage cooldown, just like falling.
+    if (this.time.now < this.state.invulnerableUntil) this.player.setPosition(this.checkpoint, this.checkpointY).setVelocity(0, 0);
+    else this.hurt(true);
+  }
   private hurt(fall = false): void {
     if (this.finished || !this.state.damage(this.time.now)) return;
     this.damageTaken++;
@@ -167,7 +181,7 @@ export class GameScene extends Phaser.Scene {
     if (this.finished) return;
     this.finished = true; this.physics.pause();
     const previousAchievements = [...progression.saves.data.achievements];
-    if (won && this.level.forest) delete progression.saves.data.checkpoints[this.level.id];
+    if (won && (this.level.forest || this.level.harbor)) delete progression.saves.data.checkpoints[this.level.id];
     const stars = won ? progression.complete(this.level.id, this.state.score, this.state.lives, this.damageTaken) : 0;
     this.scene.start('ResultScene', { levelId: this.level.id, won, score: this.state.score, stars, achievements: progression.saves.data.achievements.filter(a => !previousAchievements.includes(a)) });
   }
@@ -176,7 +190,7 @@ export class GameScene extends Phaser.Scene {
     const time = this.time.now; this.elapsed += delta;
     this.market?.update(delta);
     const platforms = this.level.platforms.filter(p => p.y === 482);
-    if (!this.forest && !this.market && this.level.boss && this.player.x > this.level.width - 650 && this.bossHits < 5) {
+    if (!this.harbor && !this.forest && !this.market && this.level.boss && this.player.x > this.level.width - 650 && this.bossHits < 5) {
       const cycle = Math.floor(this.elapsed / 2400), phase = this.elapsed % 2400;
       this.bossWarning.setText(phase < 1500 ? 'EMAK: AWAS! Jump over the low sandal!' : `DODGE! ${this.bossHits}/5`);
       if (phase >= 1500 && cycle !== this.bossCycle) {
@@ -186,7 +200,7 @@ export class GameScene extends Phaser.Scene {
         this.physics.add.overlap(this.player, shot, () => this.hurt());
         this.time.delayedCall(1800, () => { shot.destroy(); this.bossHits++; });
       }
-    } else if (!this.forest && !this.market && this.level.boss && this.bossHits >= 5) this.bossWarning.setText('EMAK CAPEK! Reach the finish →');
+    } else if (!this.harbor && !this.forest && !this.market && this.level.boss && this.bossHits >= 5) this.bossWarning.setText('EMAK CAPEK! Reach the finish →');
     const body = this.player.body as Phaser.Physics.Arcade.Body;
     const direction = Number(this.keys.right.isDown || this.keys.d.isDown) - Number(this.keys.left.isDown || this.keys.a.isDown);
     if (time >= this.hitUntil) this.player.setVelocityX(Phaser.Math.Linear(body.velocity.x, direction * SPEED, Math.min(1, delta / ((this.level.market?.slippery || this.forest?.isSlippery(this.player.x)) && (body.blocked.down || body.touching.down) ? (direction ? 140 : 350) : direction ? 65 : 45))));
@@ -204,10 +218,11 @@ export class GameScene extends Phaser.Scene {
       this.tweens.add({ targets: squash, scaleX: 1, scaleY: 1, alpha: 0, duration: 100, onComplete: () => squash.destroy() });
     }
     this.forest?.update(delta);
+    this.harbor?.update(delta);
     this.wasGrounded = grounded;
     this.player.animate(time < this.hitUntil);
     this.player.setAlpha(time < this.state.invulnerableUntil ? 0.65 : 1);
-    const checkpointDefinition = this.level.market ?? this.level.forest;
+    const checkpointDefinition = this.level.market ?? this.level.forest ?? this.level.harbor;
     if(checkpointDefinition && grounded) {
       checkpointDefinition.checkpoints.forEach((cp,i)=>{if(i>this.checkpointIndex&&Math.abs(this.player.x-cp.x)<70&&Math.abs(this.player.y-cp.y)<40){
         this.checkpointIndex=i;this.checkpoint=cp.x;this.checkpointY=cp.y;
@@ -215,7 +230,7 @@ export class GameScene extends Phaser.Scene {
         const text=label(this,this.player.x,this.player.y-70,'CHECKPOINT ✓',16);this.time.delayedCall(1500,()=>text.destroy());
       }});
     }
-    if (!this.level.forest && !this.level.market && body.blocked.down && this.player.y > 420) {
+    if (!this.level.harbor && !this.level.forest && !this.level.market && body.blocked.down && this.player.y > 420) {
       const index = platforms.findIndex(p => this.player.x > p.x + 30 && this.player.x < p.x + p.w - 30);
       if (index > this.checkpointIndex) {
         this.checkpointIndex = index; this.checkpoint = platforms[index].x + 60;

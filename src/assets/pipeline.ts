@@ -1,10 +1,11 @@
+import harbor from '../../public/assets/harbor/manifest.json';
 import forest from '../../public/assets/forest/manifest.json';
 import market from '../../public/assets/market/manifest.json';
 import Phaser from 'phaser';
 import manifest from '../../public/assets/asset-manifest.json';
 export function preloadAssets(scene: Phaser.Scene): void {
   for (const a of forest.audio) scene.load.audio(a.key, import.meta.env.BASE_URL + a.path);
-  for (const a of [...market.assets, ...forest.assets]) scene.load.spritesheet(a.key, import.meta.env.BASE_URL + a.path, {frameWidth:a.frame_size[0],frameHeight:a.frame_size[1]});
+  for (const a of [...market.assets, ...forest.assets, ...harbor.assets]) scene.load.spritesheet(a.key, import.meta.env.BASE_URL + a.path, {frameWidth:a.frame_size[0],frameHeight:a.frame_size[1]});
   for (const a of manifest.assets) {
     const url = import.meta.env.BASE_URL + a.path;
     if (a.kind === 'spritesheet') scene.load.spritesheet(a.key, url, { frameWidth: a.frame_size[0], frameHeight: a.frame_size[1] });
@@ -12,10 +13,10 @@ export function preloadAssets(scene: Phaser.Scene): void {
   }
 }
 export function generateTextures(scene: Phaser.Scene): void {
-  for (const a of forest.assets) {
+  for (const a of [...forest.assets,...harbor.assets]) {
     if ('animation' in a && a.animation && !scene.anims.exists(a.key)) scene.anims.create({key:a.key,frames:scene.anims.generateFrameNumbers(a.key,{start:0,end:a.frame_count-1}),frameRate:a.animation.frame_rate,repeat:a.animation.repeat});
   }
-  for(const a of [...market.assets, ...forest.assets]) scene.textures.get(a.key).setFilter(Phaser.Textures.FilterMode.NEAREST);
+  for(const a of [...market.assets, ...forest.assets, ...harbor.assets]) scene.textures.get(a.key).setFilter(Phaser.Textures.FilterMode.NEAREST);
   for (const a of manifest.assets) {
     scene.textures.get(a.key).setFilter(Phaser.Textures.FilterMode.NEAREST);
     if (a.animation && !scene.anims.exists(a.key)) scene.anims.create({ key: a.key, frames: scene.anims.generateFrameNumbers(a.key, { start: 0, end: a.frame_count - 1 }), frameRate: a.animation.frame_rate, repeat: a.animation.repeat });

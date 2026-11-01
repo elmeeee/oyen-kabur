@@ -1,0 +1,352 @@
+{
+  "version": 1,
+  "palette": {
+    "ink": "#203947",
+    "deep": "#315b68",
+    "sea": "#397d90",
+    "foam": "#b1e4cf",
+    "sky": "#83b8b3",
+    "wood": "#8d593a",
+    "gold": "#d7b16b",
+    "cream": "#f5dfaa",
+    "rust": "#b65f49",
+    "blue": "#577e9e",
+    "white": "#e1e7cd"
+  },
+  "assets": [
+    {
+      "key": "harbor-dock",
+      "path": "assets/harbor/harbor-dock.png",
+      "frame_size": [
+        32,
+        32
+      ],
+      "frame_count": 1,
+      "kind": "spritesheet",
+      "origin": [
+        0.5,
+        0.5
+      ],
+      "opaque": true,
+      "status": "runtime-original-programmatic"
+    },
+    {
+      "key": "harbor-crate",
+      "path": "assets/harbor/harbor-crate.png",
+      "frame_size": [
+        32,
+        32
+      ],
+      "frame_count": 1,
+      "kind": "spritesheet",
+      "origin": [
+        0.5,
+        0.5
+      ],
+      "opaque": false,
+      "status": "runtime-original-programmatic"
+    },
+    {
+      "key": "harbor-container",
+      "path": "assets/harbor/harbor-container.png",
+      "frame_size": [
+        32,
+        32
+      ],
+      "frame_count": 1,
+      "kind": "spritesheet",
+      "origin": [
+        0.5,
+        0.5
+      ],
+      "opaque": true,
+      "status": "runtime-original-programmatic"
+    },
+    {
+      "key": "harbor-boat",
+      "path": "assets/harbor/harbor-boat.png",
+      "frame_size": [
+        128,
+        64
+      ],
+      "frame_count": 4,
+      "kind": "spritesheet",
+      "origin": [
+        0.5,
+        0.5
+      ],
+      "opaque": false,
+      "status": "runtime-original-programmatic",
+      "animation": {
+        "frame_rate": 5,
+        "repeat": -1
+      }
+    },
+    {
+      "key": "harbor-cargo",
+      "path": "assets/harbor/harbor-cargo.png",
+      "frame_size": [
+        128,
+        64
+      ],
+      "frame_count": 1,
+      "kind": "spritesheet",
+      "origin": [
+        0.5,
+        0.5
+      ],
+      "opaque": false,
+      "status": "runtime-original-programmatic"
+    },
+    {
+      "key": "harbor-crane",
+      "path": "assets/harbor/harbor-crane.png",
+      "frame_size": [
+        128,
+        256
+      ],
+      "frame_count": 1,
+      "kind": "spritesheet",
+      "origin": [
+        0.5,
+        0.5
+      ],
+      "opaque": false,
+      "status": "runtime-original-programmatic"
+    },
+    {
+      "key": "harbor-anchor",
+      "path": "assets/harbor/harbor-anchor.png",
+      "frame_size": [
+        64,
+        64
+      ],
+      "frame_count": 4,
+      "kind": "spritesheet",
+      "origin": [
+        0.5,
+        0.5
+      ],
+      "opaque": false,
+      "status": "runtime-original-programmatic",
+      "animation": {
+        "frame_rate": 8,
+        "repeat": -1
+      }
+    },
+    {
+      "key": "harbor-wave",
+      "path": "assets/harbor/harbor-wave.png",
+      "frame_size": [
+        64,
+        32
+      ],
+      "frame_count": 4,
+      "kind": "spritesheet",
+      "origin": [
+        0.5,
+        0.5
+      ],
+      "opaque": false,
+      "status": "runtime-original-programmatic",
+      "animation": {
+        "frame_rate": 8,
+        "repeat": -1
+      }
+    },
+    {
+      "key": "harbor-rain",
+      "path": "assets/harbor/harbor-rain.png",
+      "frame_size": [
+        32,
+        64
+      ],
+      "frame_count": 4,
+      "kind": "spritesheet",
+      "origin": [
+        0.5,
+        0.5
+      ],
+      "opaque": false,
+      "status": "runtime-original-programmatic",
+      "animation": {
+        "frame_rate": 10,
+        "repeat": -1
+      }
+    },
+    {
+      "key": "harbor-lightning",
+      "path": "assets/harbor/harbor-lightning.png",
+      "frame_size": [
+        64,
+        256
+      ],
+      "frame_count": 3,
+      "kind": "spritesheet",
+      "origin": [
+        0.5,
+        0.5
+      ],
+      "opaque": false,
+      "status": "runtime-original-programmatic",
+      "animation": {
+        "frame_rate": 12,
+        "repeat": -1
+      }
+    },
+    {
+      "key": "harbor-sailor",
+      "path": "assets/harbor/harbor-sailor.png",
+      "frame_size": [
+        64,
+        64
+      ],
+      "frame_count": 4,
+      "kind": "spritesheet",
+      "origin": [
+        0.5,
+        0.5
+      ],
+      "opaque": false,
+      "status": "runtime-original-programmatic",
+      "animation": {
+        "frame_rate": 5,
+        "repeat": -1
+      }
+    },
+    {
+      "key": "kapten-bebek",
+      "path": "assets/harbor/kapten-bebek.png",
+      "frame_size": [
+        128,
+        128
+      ],
+      "frame_count": 9,
+      "kind": "spritesheet",
+      "origin": [
+        0.5,
+        0.5
+      ],
+      "opaque": false,
+      "status": "runtime-original-programmatic"
+    },
+    {
+      "key": "harbor-ship",
+      "path": "assets/harbor/harbor-ship.png",
+      "frame_size": [
+        128,
+        64
+      ],
+      "frame_count": 3,
+      "kind": "spritesheet",
+      "origin": [
+        0.5,
+        0.5
+      ],
+      "opaque": false,
+      "status": "runtime-original-programmatic",
+      "animation": {
+        "frame_rate": 7,
+        "repeat": -1
+      }
+    },
+    {
+      "key": "harbor-ocean",
+      "path": "assets/harbor/harbor-ocean.png",
+      "frame_size": [
+        320,
+        180
+      ],
+      "frame_count": 1,
+      "kind": "spritesheet",
+      "origin": [
+        0.5,
+        0.5
+      ],
+      "opaque": true,
+      "status": "runtime-original-programmatic"
+    },
+    {
+      "key": "harbor-buildings",
+      "path": "assets/harbor/harbor-buildings.png",
+      "frame_size": [
+        320,
+        180
+      ],
+      "frame_count": 1,
+      "kind": "spritesheet",
+      "origin": [
+        0.5,
+        0.5
+      ],
+      "opaque": false,
+      "status": "runtime-original-programmatic"
+    },
+    {
+      "key": "harbor-buoy",
+      "path": "assets/harbor/harbor-buoy.png",
+      "frame_size": [
+        32,
+        64
+      ],
+      "frame_count": 2,
+      "kind": "spritesheet",
+      "origin": [
+        0.5,
+        0.5
+      ],
+      "opaque": false,
+      "status": "runtime-original-programmatic",
+      "animation": {
+        "frame_rate": 3,
+        "repeat": -1
+      }
+    },
+    {
+      "key": "harbor-gate",
+      "path": "assets/harbor/harbor-gate.png",
+      "frame_size": [
+        96,
+        128
+      ],
+      "frame_count": 1,
+      "kind": "spritesheet",
+      "origin": [
+        0.5,
+        0.5
+      ],
+      "opaque": false,
+      "status": "runtime-original-programmatic"
+    }
+  ],
+  "boss_frames": {
+    "idle": [
+      0,
+      1
+    ],
+    "anchor": [
+      2,
+      3
+    ],
+    "wave": [
+      4
+    ],
+    "ship": [
+      5
+    ],
+    "hurt": [
+      6
+    ],
+    "recovery": [
+      7
+    ],
+    "defeated": [
+      8
+    ]
+  },
+  "limitations": [
+    "Original programmatic pixel art, integrated but not hand-polished final animation.",
+    "No new music or harbor audio.",
+    "Platforms translate without rotating Arcade collision bodies."
+  ]
+}
