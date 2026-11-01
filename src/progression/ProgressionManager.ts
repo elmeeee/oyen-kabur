@@ -18,7 +18,9 @@ export class ProgressionManager {
     const old = this.saves.data.records[id];
     this.saves.data.records[id] = { completed: true, bestScore: Math.max(old?.bestScore ?? 0, fish * 10), stars: Math.max(old?.stars ?? 0, stars), fish: Math.max(old?.fish ?? 0, fish) };
     if (damageTaken === 0) this.saves.unlock(level.boss ? ['clean-level', 'clean-boss'] : ['clean-level']);
-    this.saves.save(); return stars;
+    this.saves.save();
+    if (import.meta.env?.DEV) console.debug('[Progression] saved level result', { levelId: id, completed: true, persistent: this.saves.persistent });
+    return stars;
   }
 }
 export const progression = new ProgressionManager(new SaveManager());

@@ -71,17 +71,37 @@ test('playable game flow in Chromium', { timeout: 60000 }, async () => {
       assert.equal(await inspect('scene.level.id'), `w2-l${i}`);
       assert.equal(await inspect('game.textures.exists("juragan-lele")'), true);
       if(i===5) {
-        // Exercise the integrated boss recovery-hit path; not an end-to-end human fight.
-        for(let hit=0;hit<6;hit++) {
-          await inspect('(scene.market.boss.state="recovery", scene.market.boss.elapsed=0, scene.market.boss.damagedThisRecovery=false, scene.player.setPosition(scene.level.goal-170,418).setVelocity(0,0), true)');
-          await page.waitForTimeout(80);
-        }
-        assert.equal(await inspect('scene.market.defeated'), true);
+        const fight = await inspect(`(()=>{
+          const boss=scene.market.boss;
+          scene.state.invulnerableUntil=Number.MAX_SAFE_INTEGER;
+          for(let hit=0;hit<6;hit++){
+            scene.player.setPosition(scene.level.goal-170,418).setVelocity(0,0);
+            const hp=boss.health;
+            let steps=0;
+            while(boss.state==='telegraph'&&steps++<20)scene.market.update(250);
+            while(boss.state==='attack'&&steps++<20)scene.market.update(250);
+            if(hit<5){
+              if(boss.state!=='recovery'||!boss.vulnerable||boss.health!==hp-1)return false;
+            }else if(!scene.market.defeated||boss.health!==0)return false;
+            if(hit<5){
+              steps=0;
+              while(boss.state==='recovery'&&steps++<20)scene.market.update(250);
+            }
+          }
+          return scene.market.defeated&&boss.health===0;
+        })()`);
+        assert.equal(fight, true);
       }
       await page.screenshot({path:`/tmp/oyen-world2-${i}.png`});
       await inspect('(scene.player.setPosition(scene.level.goal, scene.level.market.goalY).setVelocity(0,0), true)');
       await page.waitForTimeout(150);
       assert.equal(await inspect('game.scene.isActive("ResultScene")'),true);
+      if(i===5) {
+        assert.deepEqual(await page.evaluate(async()=>{
+          const {progression}=await import('/src/progression/ProgressionManager.ts');
+          return {completed:progression.saves.data.records['w2-l5']?.completed,world3:progression.worldUnlocked('w3')};
+        }),{completed:true,world3:true});
+      }
     }
     await page.reload();
     await page.waitForTimeout(500);
