@@ -2,10 +2,16 @@ import { LevelLoader, worlds } from './registry';
 import { SaveManager } from './SaveManager';
 export class ProgressionManager {
   constructor(public saves: SaveManager) {}
-  worldUnlocked(id: string): boolean { const i = worlds.findIndex(w => w.id === id); return i === 0 || (i > 0 && !!this.saves.data.records[worlds[i - 1].levelIds[4]]?.completed); }
+  worldUnlocked(id: string): boolean {
+    const i=worlds.findIndex(w=>w.id===id);
+    if(i<0)return false;
+    return i===0 || !!this.saves.data.records[worlds[i-1].levelIds[4]]?.completed || worlds[i].levelIds.some(levelId=>this.saves.data.records[levelId]?.completed);
+  }
   unlocked(id: string): boolean {
     const world = worlds.find(w => w.levelIds.includes(id));
-    if (!world || !world.available || !this.worldUnlocked(world.id)) return false;
+    if (!world || !world.available) return false;
+    if(this.saves.data.records[id]?.completed)return true;
+    if(!this.worldUnlocked(world.id))return false;
     const i = world.levelIds.indexOf(id);
     return i === 0 || !!this.saves.data.records[world.levelIds[i - 1]]?.completed;
   }

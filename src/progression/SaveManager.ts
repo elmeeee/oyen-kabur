@@ -1,9 +1,9 @@
 import { catalog, isCosmetic, type CosmeticId } from './catalog';
 import { levels } from './registry';
 export interface RecordData { completed: boolean; bestScore: number; stars: number; fish: number }
-export interface SaveData { version: 2; checkpoints: Record<string, number>; collectedFish: number; owned: CosmeticId[]; equipped: CosmeticId | null; achievements: string[]; records: Record<string, RecordData>; currency: number }
+export interface SaveData { version: 3; campaign: { completed:boolean; endingSeen:boolean }; checkpoints: Record<string, number>; collectedFish: number; owned: CosmeticId[]; equipped: CosmeticId | null; achievements: string[]; records: Record<string, RecordData>; currency: number }
 export interface StorageAdapter { getItem(key: string): string | null; setItem(key: string, value: string): void }
-const empty = (): SaveData => ({ version: 2, checkpoints: {}, records: {}, currency: 0, collectedFish: 0, owned: [], equipped: null, achievements: [] });
+const empty = (): SaveData => ({ version: 3, campaign: {completed:false,endingSeen:false}, checkpoints: {}, records: {}, currency: 0, collectedFish: 0, owned: [], equipped: null, achievements: [] });
 export class SaveManager {
   data = empty();
   persistent = true;
@@ -11,24 +11,28 @@ export class SaveManager {
     try {
       this.storage ??= localStorage;
       const raw: unknown = JSON.parse(this.storage.getItem('oyen-progression') ?? 'null');
-      if (!raw || typeof raw !== 'object' || !('version' in raw) || (raw.version !== 1 && raw.version !== 2)) return;
+      if (!raw || typeof raw !== 'object' || !('version' in raw) || (raw.version !== 1 && raw.version !== 2 && raw.version !== 3)) return;
       const candidate = raw as Partial<SaveData>;
       for (const level of levels) {
         const r = candidate.records?.[level.id];
         if (!r || r.completed !== true || !Number.isInteger(r.bestScore) || r.bestScore < 0 || r.bestScore > level.fish.length * 10 || !Number.isInteger(r.stars) || r.stars < 1 || r.stars > 3 || !Number.isInteger(r.fish) || r.fish < 0 || r.fish > level.fish.length) continue;
         this.data.records[level.id] = { ...r };
       }
-      if (raw.version === 2) {
+      if (raw.version === 2 || raw.version === 3) {
         this.data.collectedFish = Number.isSafeInteger(candidate.collectedFish) && candidate.collectedFish! >= 0 ? candidate.collectedFish! : 0;
         this.data.owned = Array.isArray(candidate.owned) ? [...new Set(candidate.owned.filter(isCosmetic))] : [];
         this.data.equipped = isCosmetic(candidate.equipped) && this.data.owned.includes(candidate.equipped) ? candidate.equipped : null;
         this.data.achievements = Array.isArray(candidate.achievements) ? [...new Set(candidate.achievements.filter(a => ['fish100', 'clean-level', 'clean-boss'].includes(a)))] : [];
       }
-      for(const level of levels) { const index=candidate.checkpoints?.[level.id]; if((level.market ?? level.forest ?? level.harbor) && Number.isInteger(index) && index! >= 0 && index! < (level.market ?? level.forest ?? level.harbor)!.checkpoints.length) this.data.checkpoints[level.id]=index!; }
+      for(const level of levels) { const index=candidate.checkpoints?.[level.id]; if((level.market ?? level.forest ?? level.harbor ?? level.palace) && Number.isInteger(index) && index! >= 0 && index! < (level.market ?? level.forest ?? level.harbor ?? level.palace)!.checkpoints.length) this.data.checkpoints[level.id]=index!; }
+      this.data.campaign.completed=!!this.data.records['w5-l5']?.completed;
+      this.data.campaign.endingSeen=raw.version===3&&this.data.campaign.completed&&candidate.campaign?.endingSeen===true;
       this.recalculate();
     } catch { this.persistent = false; }
   }
   recalculate(): void {
+    this.data.campaign.completed=!!this.data.records['w5-l5']?.completed;
+    if(!this.data.campaign.completed)this.data.campaign.endingSeen=false;
     this.data.currency = Math.max(0, this.data.collectedFish + levels.reduce((sum, l) => sum + (this.data.records[l.id]?.completed ? l.reward + this.data.records[l.id].fish : 0), 0) - catalog.filter(c => this.data.owned.includes(c.id)).reduce((sum, c) => sum + c.price, 0));
   }
   save(): void { this.recalculate(); try { if (!this.storage) throw new Error(); this.storage.setItem('oyen-progression', JSON.stringify(this.data)); } catch { this.persistent = false; } }
@@ -47,5 +51,6 @@ export class SaveManager {
     const fresh = ids.filter(id => !this.data.achievements.includes(id));
     this.data.achievements.push(...fresh); return fresh;
   }
+  finishEnding(): void { if(this.data.campaign.completed){this.data.campaign.endingSeen=true;this.save();} }
   reset(): void { this.data = empty(); this.save(); }
 }

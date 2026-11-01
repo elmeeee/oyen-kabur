@@ -16,7 +16,7 @@ test('transactions, equipment and achievements persist without duplicate spendin
 });
 test('v1 migration preserves completion credit and applies spending once', () => {
  const disk=storage();disk.setItem('',JSON.stringify({version:1,currency:999,records:{'w1-l1':{completed:true,bestScore:10,stars:2,fish:1}}}));
- const save=new SaveManager(disk);assert.equal(save.data.version,2);assert.equal(save.data.currency,21);
+ const save=new SaveManager(disk);assert.equal(save.data.version,3);assert.equal(save.data.currency,21);
  assert.deepEqual(save.data.owned,[]);save.save();assert.equal(new SaveManager(disk).data.currency,21);
 });
 test('no damage achievements require a successful zero-damage clear', () => {

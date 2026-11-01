@@ -147,7 +147,7 @@ test('World 4: boats, water, storm, cranes, five goals, natural Captain phases a
     assert.equal(await inspect('scene.harbor.defeated'),true);assert.equal(await inspect('scene.harbor.shots.size'),0);
     await finish();assert.equal(await inspect('progression.worldUnlocked("w5")'),true);
     await page.reload();await waitFor('game.scene.getScene("MainMenuScene").children.list.some(c=>c.input?.enabled)');
-    assert.equal(await inspect('progression.worldUnlocked("w5")'),true);assert.equal(await inspect('progression.unlocked("w5-l1")'),false);
+    assert.equal(await inspect('progression.worldUnlocked("w5")'),true);assert.equal(await inspect('progression.unlocked("w5-l1")'),true);
     for(let i=1;i<=5;i++)assert.equal(await inspect(`progression.saves.data.records['w4-l${i}'].completed`),true);
     await start(4);assert.equal(await inspect('scene.checkpointIndex'),0,'completion resets retry checkpoint for full replay');
     assert.deepEqual(errors,[]);

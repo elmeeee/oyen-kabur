@@ -13,7 +13,7 @@ function memory(initial: unknown=null):StorageAdapter {
 }
 test('five harbor levels have safe starts, finishes, checkpoints and a reachable critical route',()=>{
   assert.equal(harbor.length,5);assert.ok(worlds.find(w=>w.id==='w4')?.available);
-  assert.equal(worlds.find(w=>w.id==='w5')?.available,false);
+  assert.equal(worlds.find(w=>w.id==='w5')?.available,true);
   for(const [i,l] of harbor.entries()) {
     const h=l.harbor!;assert.equal(l.id,`w4-l${i+1}`);assert.equal(l.boss,i===4);assert.equal(!!h.boss,l.boss);
     assert.ok(l.objectives.fish<=l.fish.length);
@@ -109,9 +109,9 @@ test('harbor stars, rewards, checkpoint data and World 5 unlock persist; v1/v2 s
   }
   const storage=memory(),save=new SaveManager(storage),p=new ProgressionManager(save);
   assert.equal(p.unlocked('w4-l1'),false);
-  for(const l of levels.filter(l=>l.worldId!=='w4'))p.complete(l.id,0,3);
+  for(const l of levels.filter(l=>['w1','w2','w3'].includes(l.worldId)))p.complete(l.id,0,3);
   assert.ok(p.unlocked('w4-l1'));assert.equal(p.worldUnlocked('w5'),false);
   for(const l of harbor){assert.equal(p.complete(l.id,l.fish.length*10,3,0),3);const balance=save.data.currency;p.complete(l.id,0,1);assert.equal(save.data.currency,balance);assert.equal(save.data.records[l.id].stars,3);save.data.checkpoints[l.id]=l.harbor!.checkpoints.length-1;save.save();}
   const restored=new SaveManager(storage);assert.deepEqual(restored.data,save.data);
-  assert.ok(new ProgressionManager(restored).worldUnlocked('w5'));assert.equal(new ProgressionManager(restored).unlocked('w5-l1'),false);
+  assert.ok(new ProgressionManager(restored).worldUnlocked('w5'));assert.equal(new ProgressionManager(restored).unlocked('w5-l1'),true);
 });
