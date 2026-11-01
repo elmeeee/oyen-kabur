@@ -180,6 +180,7 @@ export class GameScene extends Phaser.Scene {
   private end(won: boolean): void {
     if (this.finished) return;
     this.finished = true; this.physics.pause();
+    if (import.meta.env?.DEV) console.debug('[Level] completion', { levelId: this.level.id, won });
     const previousAchievements = [...progression.saves.data.achievements];
     if (won && (this.level.forest || this.level.harbor)) delete progression.saves.data.checkpoints[this.level.id];
     const stars = won ? progression.complete(this.level.id, this.state.score, this.state.lives, this.damageTaken) : 0;

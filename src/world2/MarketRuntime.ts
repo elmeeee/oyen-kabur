@@ -49,8 +49,8 @@ export class MarketRuntime {
     const transitions=this.boss.update(delta);
     this.bossSprite.setFrame(this.boss.phase-1);
     this.bossSprite.setY(418 + Math.sin(this.clock/180)*(this.boss.state==='attack'?6:2));
-    this.warning.setText(this.defeated?'JURAGAN MENYERAH! Finish →':`Phase ${this.boss.phase} • ${this.boss.state} • ${this.boss.attack}\n${this.boss.state==='recovery'?'Touch Juragan now!':'Keep clear; wait for recovery.'} HP ${this.boss.health}`);
-    this.bossSprite.setTint(this.boss.state==='recovery'?0xaaffcc:0xffffff);
+    this.warning.setText(this.defeated?'JURAGAN MENYERAH! Finish →':`Phase ${this.boss.phase} • ${this.boss.state} • ${this.boss.attack}\n${this.boss.vulnerable?'Touch Juragan now!':'Keep clear; wait for recovery.'} HP ${this.boss.health}`);
+    this.bossSprite.setTint(this.boss.vulnerable?0xaaffcc:0xffffff);
     if(transitions.includes('attack')){
       if(this.boss.phase===1)for(const y of [445,365])this.projectile(this.bossSprite.x,y,'market-fish',-210,0);
       if(this.boss.phase===2)this.projectile(this.bossSprite.x,450,'market-cart',-330,0);
