@@ -24,7 +24,7 @@ export class SaveManager {
         this.data.equipped = isCosmetic(candidate.equipped) && this.data.owned.includes(candidate.equipped) ? candidate.equipped : null;
         this.data.achievements = Array.isArray(candidate.achievements) ? [...new Set(candidate.achievements.filter(a => ['fish100', 'clean-level', 'clean-boss'].includes(a)))] : [];
       }
-      for(const level of levels) { const index=candidate.checkpoints?.[level.id]; if(level.market && Number.isInteger(index) && index! >= 0 && index! < level.market.checkpoints.length) this.data.checkpoints[level.id]=index!; }
+      for(const level of levels) { const index=candidate.checkpoints?.[level.id]; if((level.market ?? level.forest) && Number.isInteger(index) && index! >= 0 && index! < (level.market ?? level.forest)!.checkpoints.length) this.data.checkpoints[level.id]=index!; }
       this.recalculate();
     } catch { this.persistent = false; }
   }

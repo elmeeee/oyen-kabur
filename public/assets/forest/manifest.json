@@ -1,0 +1,309 @@
+{
+  "version": 1,
+  "palette": {
+    "ink": "#193833",
+    "deep": "#244e43",
+    "green": "#41784e",
+    "leaf": "#73aa5d",
+    "light": "#b8cf78",
+    "cream": "#f5dfaa",
+    "brown": "#77513d",
+    "gold": "#e7ac42",
+    "blue": "#529eaa",
+    "foam": "#b1e4cf"
+  },
+  "assets": [
+    {
+      "key": "forest-earth",
+      "path": "assets/forest/forest-earth.png",
+      "frame_size": [
+        32,
+        32
+      ],
+      "frame_count": 1,
+      "kind": "spritesheet",
+      "origin": [
+        0.5,
+        0.5
+      ],
+      "opaque": true,
+      "status": "runtime-original-programmatic"
+    },
+    {
+      "key": "forest-bamboo",
+      "path": "assets/forest/forest-bamboo.png",
+      "frame_size": [
+        32,
+        32
+      ],
+      "frame_count": 1,
+      "kind": "spritesheet",
+      "origin": [
+        0.5,
+        0.5
+      ],
+      "opaque": false,
+      "status": "runtime-original-programmatic"
+    },
+    {
+      "key": "forest-fragile",
+      "path": "assets/forest/forest-fragile.png",
+      "frame_size": [
+        32,
+        32
+      ],
+      "frame_count": 2,
+      "kind": "spritesheet",
+      "origin": [
+        0.5,
+        0.5
+      ],
+      "opaque": false,
+      "status": "runtime-original-programmatic"
+    },
+    {
+      "key": "forest-rock",
+      "path": "assets/forest/forest-rock.png",
+      "frame_size": [
+        32,
+        32
+      ],
+      "frame_count": 1,
+      "kind": "spritesheet",
+      "origin": [
+        0.5,
+        0.5
+      ],
+      "opaque": false,
+      "status": "runtime-original-programmatic"
+    },
+    {
+      "key": "forest-foliage",
+      "path": "assets/forest/forest-foliage.png",
+      "frame_size": [
+        96,
+        96
+      ],
+      "frame_count": 1,
+      "kind": "spritesheet",
+      "origin": [
+        0.5,
+        0.5
+      ],
+      "opaque": false,
+      "status": "runtime-original-programmatic"
+    },
+    {
+      "key": "forest-stalks",
+      "path": "assets/forest/forest-stalks.png",
+      "frame_size": [
+        64,
+        96
+      ],
+      "frame_count": 1,
+      "kind": "spritesheet",
+      "origin": [
+        0.5,
+        0.5
+      ],
+      "opaque": false,
+      "status": "runtime-original-programmatic"
+    },
+    {
+      "key": "forest-banana",
+      "path": "assets/forest/forest-banana.png",
+      "frame_size": [
+        32,
+        32
+      ],
+      "frame_count": 1,
+      "kind": "spritesheet",
+      "origin": [
+        0.5,
+        0.5
+      ],
+      "opaque": false,
+      "status": "runtime-original-programmatic"
+    },
+    {
+      "key": "forest-monkey",
+      "path": "assets/forest/forest-monkey.png",
+      "frame_size": [
+        64,
+        64
+      ],
+      "frame_count": 4,
+      "kind": "spritesheet",
+      "origin": [
+        0.5,
+        0.5
+      ],
+      "opaque": false,
+      "status": "runtime-original-programmatic",
+      "animation": {
+        "frame_rate": 5,
+        "repeat": -1
+      }
+    },
+    {
+      "key": "monyet-sultan",
+      "path": "assets/forest/monyet-sultan.png",
+      "frame_size": [
+        128,
+        128
+      ],
+      "frame_count": 9,
+      "kind": "spritesheet",
+      "origin": [
+        0.5,
+        0.5
+      ],
+      "opaque": false,
+      "status": "runtime-original-programmatic"
+    },
+    {
+      "key": "forest-water",
+      "path": "assets/forest/forest-water.png",
+      "frame_size": [
+        32,
+        64
+      ],
+      "frame_count": 4,
+      "kind": "spritesheet",
+      "origin": [
+        0.5,
+        0.5
+      ],
+      "opaque": false,
+      "status": "runtime-original-programmatic",
+      "animation": {
+        "frame_rate": 8,
+        "repeat": -1
+      }
+    },
+    {
+      "key": "forest-shockwave",
+      "path": "assets/forest/forest-shockwave.png",
+      "frame_size": [
+        64,
+        32
+      ],
+      "frame_count": 4,
+      "kind": "spritesheet",
+      "origin": [
+        0.5,
+        0.5
+      ],
+      "opaque": false,
+      "status": "runtime-original-programmatic",
+      "animation": {
+        "frame_rate": 10,
+        "repeat": -1
+      }
+    },
+    {
+      "key": "forest-background",
+      "path": "assets/forest/forest-background.png",
+      "frame_size": [
+        320,
+        180
+      ],
+      "frame_count": 1,
+      "kind": "spritesheet",
+      "origin": [
+        0.5,
+        0.5
+      ],
+      "opaque": true,
+      "status": "runtime-original-programmatic"
+    },
+    {
+      "key": "forest-mist",
+      "path": "assets/forest/forest-mist.png",
+      "frame_size": [
+        320,
+        180
+      ],
+      "frame_count": 1,
+      "kind": "spritesheet",
+      "origin": [
+        0.5,
+        0.5
+      ],
+      "opaque": false,
+      "status": "runtime-original-programmatic"
+    },
+    {
+      "key": "forest-gate",
+      "path": "assets/forest/forest-gate.png",
+      "frame_size": [
+        96,
+        128
+      ],
+      "frame_count": 1,
+      "kind": "spritesheet",
+      "origin": [
+        0.5,
+        0.5
+      ],
+      "opaque": false,
+      "status": "runtime-original-programmatic"
+    }
+  ],
+  "audio": [
+    {
+      "key": "forest-crack",
+      "path": "assets/forest/forest-crack.wav",
+      "sample_rate": 22050,
+      "channels": 1
+    },
+    {
+      "key": "forest-boss-hit",
+      "path": "assets/forest/forest-boss-hit.wav",
+      "sample_rate": 22050,
+      "channels": 1
+    },
+    {
+      "key": "forest-roar",
+      "path": "assets/forest/forest-roar.wav",
+      "sample_rate": 22050,
+      "channels": 1
+    },
+    {
+      "key": "forest-clear",
+      "path": "assets/forest/forest-clear.wav",
+      "sample_rate": 22050,
+      "channels": 1
+    }
+  ],
+  "boss_frames": {
+    "idle": [
+      0,
+      1
+    ],
+    "banana": [
+      2,
+      3
+    ],
+    "slam": [
+      4
+    ],
+    "summon": [
+      5
+    ],
+    "hurt": [
+      6
+    ],
+    "recovery": [
+      7
+    ],
+    "defeated": [
+      8
+    ]
+  },
+  "limitations": [
+    "Original programmatic pixel artwork; requires human art-direction and animation polish.",
+    "No background music.",
+    "Arcade bridge decks stay horizontal; ropes swing, collision does not rotate."
+  ]
+}
