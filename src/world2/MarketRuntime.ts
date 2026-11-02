@@ -31,6 +31,10 @@ export class MarketRuntime {
     shot.body.setAllowGravity(false);shot.setSize(key==='market-net'?40:24,key==='market-net'?40:16).setVelocity(vx,vy);
     this.shots.add(shot);this.scene.physics.add.overlap(this.player,shot,()=>{this.hurt();shot.destroy();this.shots.delete(shot);});
   }
+  private clearShots():void {
+    for(const shot of this.shots) shot.destroy();
+    this.shots.clear();
+  }
   update(delta:number):void {
     this.clock+=delta;
     for(const c of this.carts){const target=c.x+Math.sin(this.clock/1100)*c.range;c.sprite.setVelocityX((target-c.sprite.x)*10);}
@@ -57,7 +61,10 @@ export class MarketRuntime {
       if(this.boss.phase===3)for(const x of [this.player.x-80,this.player.x+80])this.projectile(x,200,'market-net',0,220);
     }
     if(Math.abs(this.player.x-this.bossSprite.x)<65&&Math.abs(this.player.y-this.bossSprite.y)<70){
-      if(this.boss.hit())this.player.setVelocityY(-240);
+      if(this.boss.hit()){
+        this.player.setVelocityY(-240);
+        if(this.defeated)this.clearShots();
+      }
       else if(this.boss.state==='attack')this.hurt();
     }
   }

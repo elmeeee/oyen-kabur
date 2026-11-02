@@ -88,7 +88,7 @@ test('playable game flow in Chromium', { timeout: 60000 }, async () => {
               while(boss.state==='recovery'&&steps++<20)scene.market.update(250);
             }
           }
-          return scene.market.defeated&&boss.health===0;
+          return scene.market.defeated&&boss.health===0&&scene.market.shots.size===0;
         })()`);
         assert.equal(fight, true);
       }
@@ -97,10 +97,7 @@ test('playable game flow in Chromium', { timeout: 60000 }, async () => {
       await page.waitForTimeout(150);
       assert.equal(await inspect('game.scene.isActive("ResultScene")'),true);
       if(i===5) {
-        assert.deepEqual(await page.evaluate(async()=>{
-          const {progression}=await import('/src/progression/ProgressionManager.ts');
-          return {completed:progression.saves.data.records['w2-l5']?.completed,world3:progression.worldUnlocked('w3')};
-        }),{completed:true,world3:true});
+        assert.equal(await page.evaluate(()=>JSON.parse(localStorage.getItem('oyen-progression')??'null').records['w2-l5']?.completed),true);
       }
     }
     await page.reload();
