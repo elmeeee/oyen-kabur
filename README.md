@@ -72,8 +72,8 @@ During gameplay Escape now pauses instead of returning to the menu. Result scree
 
 Start opens World Map, then Level Select. Enter selects World 1 / its first level;
 click any unlocked level to replay it. Complete levels in order. The World 1 boss
-unlocks World 2. Worlds 1–4 now each have five playable levels; World 5 remains
-future content. All five World 1 layouts live in `src/data/world1.json` and use the
+unlocks World 2. All five worlds now have five playable levels each. Final release QA and polish
+remain a separate task. All five World 1 layouts live in `src/data/world1.json` and use the
 same GameScene, player, assets and physics.
 
 Stars: one for finishing, one for the level's fish objective, one for its remaining
@@ -107,8 +107,8 @@ fine alignment polish are future work. Overlays never change collision bodies.
 
 Each gameplay fish adds one spendable fish and 10 level-score points. Replays can
 earn pickup currency again; one-time completion bonuses remain protected. Existing
-campaign best-fish credits are retained for compatibility. Version-1 saves migrate
-to version 2 without inventing historical lifetime pickup counts. Purchases are
+campaign best-fish credits are retained for compatibility. Version-1 and version-2 saves migrate
+to version 3 without inventing historical lifetime pickup counts. Purchases are
 permanent and balances are derived from earned credits minus owned-item costs.
 Storage failures retain session state. Achievements track 100 lifetime pickups,
 a no-damage clear, and a no-damage boss clear; notification text accompanies unlocks.
@@ -147,7 +147,7 @@ and marked monkey summons with a slam. Read the warning, dodge, then touch him
 once during each 1.9-second tired window. Defeat clears his attacks and opens the
 exit. Completing level 15 persistently unlocks the playable World 4. Checkpoints survive R/reload during an attempt; completing a forest level
 clears its checkpoint so Replay starts at the beginning. Stars and fish rewards
-use the existing progression/economy rules and version-2 save format.
+use the existing progression/economy rules and version-3 save format.
 
 Press **M** or click the lower-right SFX control to mute the four original forest
 sound effects. The choice persists locally with a session fallback. Music is not
@@ -180,10 +180,10 @@ lightning never uses a full-screen flash. Dock sailors warn before throwing anch
 Kapten Bebek has nine health and three phases: arcing anchor throws, low water waves,
 and charging ships. Read each telegraph, avoid the attack, then touch Kapten once
 during the two-second exposed window. Defeat clears the attacks and opens the exit.
-Finishing level 20 persistently unlocks World 5, which remains future content.
+Finishing level 20 persistently unlocks the playable World 5.
 Checkpoints persist during attempts; completing a harbor level clears its checkpoint
 for a full replay. Earlier saves, cosmetics, achievements and fish rewards remain
-compatible with save version 2.
+compatible through migration to save version 3.
 
 Generate original harbor art with `python3 scripts/generate_harbor_art.py`. Its
 manifest and two contact sheets live in `public/assets/harbor/`; the existing asset
@@ -192,3 +192,35 @@ Kapten's nine poses use 128px frames. These integrated programmatic pixel assets
 still need human animation/art-direction polish. Harbor music/audio is not added.
 Full unassisted traversal, boat/crane timing, lightning fairness, boss difficulty,
 three-star routes and cosmetic alignment still require human playtesting.
+
+## Kerajaan Meong / World 5 and campaign ending
+
+Levels 21–25 add royal patrols and moving stone decks, warned arrow traps and a
+collapsing gap floor, a secret door, tower elevators and ranged guards, then a
+combined throne-room gauntlet with a three-hit sentinel and final checkpoint.
+Fragile floors warn for one second and return after 3.5 seconds once clear. Arrow
+and guard spells give an 1100ms warning. Permanent shelves keep critical paths
+reachable while moving decks provide bonus routes.
+
+Raja Kucing Hitam has twelve health and four phases: Royal Claws (swipe/dash),
+Shadow Magic (warned teleport and orbs), Dark Kingdom (raised refuge and warned
+shadow lanes), and Last Meow (faster mixed attacks). Watch the telegraph, jump low
+attacks or leave marked lanes, then touch Raja once during the tired window. The
+intro and defeat briefly lock movement; Escape still pauses. Defeating Raja starts
+the ending automatically after his dropped-crown animation.
+
+Advance the three homecoming panels with Enter, Space or click, or let them play.
+The campaign summary leads to credits, world map and main menu. Campaign completion
+is saved before the cutscene; ending-viewed status is saved after its third panel.
+After reload, the world map's **TAMAT • ENDING [C]** link replays the ending. Every
+completed level remains replayable, with best stars/scores preserved and no duplicate
+completion rewards. Version-3 saves migrate versions 1 and 2 without losing earlier
+worlds, equipment, fish or achievements. Storage failure retains a session-only win.
+
+Generate the original royal art and ending panels with
+`python3 scripts/generate_palace_art.py`; validate with `npm run validate:assets`.
+The manifest and contact sheets live in `public/assets/palace/`. The ending uses
+fixed illustrated Oyen panels; gameplay still shows the saved equipped cosmetic.
+These original programmatic assets need human art/animation polish, and music and
+voice acting are not supplied. All-world unassisted traversal, boss balance,
+three-star routes, device/browser coverage and final release QA remain open.

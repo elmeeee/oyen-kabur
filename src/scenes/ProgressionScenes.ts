@@ -6,6 +6,12 @@ export class WorldMapScene extends Phaser.Scene {
   constructor() { super('WorldMapScene'); }
   create(): void {
     village(this); label(this, 40, 25, `PETA DUNIA  •  Fish ${progression.saves.data.currency}`, 26);
+    if(progression.saves.data.campaign.completed){
+      const ending=()=>this.scene.start('EndingScene');
+      label(this,920,28,'TAMAT • ENDING [C]',15).setOrigin(1,0).setInteractive({useHandCursor:true}).on('pointerdown',ending);
+      this.input.keyboard?.once('keydown-C',ending);
+      this.events.once('shutdown',()=>this.input.keyboard?.off('keydown-C',ending));
+    }
     const records = Object.values(progression.saves.data.records);
     label(this, 40, 68, `${records.length}/25 completed • ${records.reduce((n, r) => n + r.stars, 0)}/75 stars • ${worlds.filter(w => progression.worldUnlocked(w.id)).length}/5 worlds unlocked`, 16);
     worlds.forEach((w, i) => {

@@ -1,0 +1,371 @@
+{
+  "version": 1,
+  "palette": {
+    "ink": "#211e35",
+    "stone": "#4d5068",
+    "light": "#888da3",
+    "purple": "#684a8c",
+    "deep": "#352c52",
+    "gold": "#d7b16b",
+    "cream": "#f5dfaa",
+    "rose": "#d27993",
+    "blue": "#72b4bc",
+    "black": "#252636",
+    "fur": "#3e3e54",
+    "orange": "#df8f45",
+    "green": "#6c9874"
+  },
+  "assets": [
+    {
+      "key": "palace-stone",
+      "path": "assets/palace/palace-stone.png",
+      "frame_size": [
+        32,
+        32
+      ],
+      "frame_count": 1,
+      "kind": "spritesheet",
+      "origin": [
+        0.5,
+        0.5
+      ],
+      "opaque": true,
+      "status": "original-programmatic-runtime"
+    },
+    {
+      "key": "palace-gold",
+      "path": "assets/palace/palace-gold.png",
+      "frame_size": [
+        32,
+        32
+      ],
+      "frame_count": 1,
+      "kind": "spritesheet",
+      "origin": [
+        0.5,
+        0.5
+      ],
+      "opaque": false,
+      "status": "original-programmatic-runtime"
+    },
+    {
+      "key": "palace-fragile",
+      "path": "assets/palace/palace-fragile.png",
+      "frame_size": [
+        32,
+        32
+      ],
+      "frame_count": 2,
+      "kind": "spritesheet",
+      "origin": [
+        0.5,
+        0.5
+      ],
+      "opaque": false,
+      "status": "original-programmatic-runtime"
+    },
+    {
+      "key": "palace-banner",
+      "path": "assets/palace/palace-banner.png",
+      "frame_size": [
+        32,
+        96
+      ],
+      "frame_count": 1,
+      "kind": "spritesheet",
+      "origin": [
+        0.5,
+        0.5
+      ],
+      "opaque": false,
+      "status": "original-programmatic-runtime"
+    },
+    {
+      "key": "palace-gate",
+      "path": "assets/palace/palace-gate.png",
+      "frame_size": [
+        128,
+        192
+      ],
+      "frame_count": 1,
+      "kind": "spritesheet",
+      "origin": [
+        0.5,
+        0.5
+      ],
+      "opaque": false,
+      "status": "original-programmatic-runtime"
+    },
+    {
+      "key": "palace-trap",
+      "path": "assets/palace/palace-trap.png",
+      "frame_size": [
+        32,
+        64
+      ],
+      "frame_count": 2,
+      "kind": "spritesheet",
+      "origin": [
+        0.5,
+        0.5
+      ],
+      "opaque": false,
+      "status": "original-programmatic-runtime"
+    },
+    {
+      "key": "palace-arrow",
+      "path": "assets/palace/palace-arrow.png",
+      "frame_size": [
+        32,
+        32
+      ],
+      "frame_count": 1,
+      "kind": "spritesheet",
+      "origin": [
+        0.5,
+        0.5
+      ],
+      "opaque": false,
+      "status": "original-programmatic-runtime"
+    },
+    {
+      "key": "palace-orb",
+      "path": "assets/palace/palace-orb.png",
+      "frame_size": [
+        32,
+        32
+      ],
+      "frame_count": 4,
+      "kind": "spritesheet",
+      "origin": [
+        0.5,
+        0.5
+      ],
+      "opaque": false,
+      "status": "original-programmatic-runtime",
+      "animation": {
+        "frame_rate": 8,
+        "repeat": -1
+      }
+    },
+    {
+      "key": "palace-claw",
+      "path": "assets/palace/palace-claw.png",
+      "frame_size": [
+        128,
+        64
+      ],
+      "frame_count": 3,
+      "kind": "spritesheet",
+      "origin": [
+        0.5,
+        0.5
+      ],
+      "opaque": false,
+      "status": "original-programmatic-runtime",
+      "animation": {
+        "frame_rate": 10,
+        "repeat": -1
+      }
+    },
+    {
+      "key": "palace-shadow",
+      "path": "assets/palace/palace-shadow.png",
+      "frame_size": [
+        64,
+        32
+      ],
+      "frame_count": 4,
+      "kind": "spritesheet",
+      "origin": [
+        0.5,
+        0.5
+      ],
+      "opaque": false,
+      "status": "original-programmatic-runtime",
+      "animation": {
+        "frame_rate": 8,
+        "repeat": -1
+      }
+    },
+    {
+      "key": "palace-spark",
+      "path": "assets/palace/palace-spark.png",
+      "frame_size": [
+        32,
+        32
+      ],
+      "frame_count": 4,
+      "kind": "spritesheet",
+      "origin": [
+        0.5,
+        0.5
+      ],
+      "opaque": false,
+      "status": "original-programmatic-runtime",
+      "animation": {
+        "frame_rate": 12,
+        "repeat": -1
+      }
+    },
+    {
+      "key": "palace-guard",
+      "path": "assets/palace/palace-guard.png",
+      "frame_size": [
+        64,
+        64
+      ],
+      "frame_count": 4,
+      "kind": "spritesheet",
+      "origin": [
+        0.5,
+        0.5
+      ],
+      "opaque": false,
+      "status": "original-programmatic-runtime",
+      "animation": {
+        "frame_rate": 5,
+        "repeat": -1
+      }
+    },
+    {
+      "key": "palace-sentinel",
+      "path": "assets/palace/palace-sentinel.png",
+      "frame_size": [
+        64,
+        64
+      ],
+      "frame_count": 4,
+      "kind": "spritesheet",
+      "origin": [
+        0.5,
+        0.5
+      ],
+      "opaque": false,
+      "status": "original-programmatic-runtime",
+      "animation": {
+        "frame_rate": 5,
+        "repeat": -1
+      }
+    },
+    {
+      "key": "raja-kucing-hitam",
+      "path": "assets/palace/raja-kucing-hitam.png",
+      "frame_size": [
+        128,
+        128
+      ],
+      "frame_count": 12,
+      "kind": "spritesheet",
+      "origin": [
+        0.5,
+        0.5
+      ],
+      "opaque": false,
+      "status": "original-programmatic-runtime"
+    },
+    {
+      "key": "palace-throne",
+      "path": "assets/palace/palace-throne.png",
+      "frame_size": [
+        128,
+        192
+      ],
+      "frame_count": 1,
+      "kind": "spritesheet",
+      "origin": [
+        0.5,
+        0.5
+      ],
+      "opaque": false,
+      "status": "original-programmatic-runtime"
+    },
+    {
+      "key": "palace-background",
+      "path": "assets/palace/palace-background.png",
+      "frame_size": [
+        320,
+        180
+      ],
+      "frame_count": 1,
+      "kind": "spritesheet",
+      "origin": [
+        0.5,
+        0.5
+      ],
+      "opaque": true,
+      "status": "original-programmatic-runtime"
+    },
+    {
+      "key": "palace-arches",
+      "path": "assets/palace/palace-arches.png",
+      "frame_size": [
+        320,
+        180
+      ],
+      "frame_count": 1,
+      "kind": "spritesheet",
+      "origin": [
+        0.5,
+        0.5
+      ],
+      "opaque": false,
+      "status": "original-programmatic-runtime"
+    },
+    {
+      "key": "palace-ending",
+      "path": "assets/palace/palace-ending.png",
+      "frame_size": [
+        320,
+        180
+      ],
+      "frame_count": 3,
+      "kind": "spritesheet",
+      "origin": [
+        0.5,
+        0.5
+      ],
+      "opaque": true,
+      "status": "original-programmatic-runtime"
+    }
+  ],
+  "boss_frames": {
+    "intro": [
+      0
+    ],
+    "idle": [
+      1
+    ],
+    "swipe": [
+      2,
+      3
+    ],
+    "dash": [
+      4
+    ],
+    "magic": [
+      5
+    ],
+    "arena": [
+      6
+    ],
+    "last_meow": [
+      7
+    ],
+    "hurt": [
+      8
+    ],
+    "recovery": [
+      9
+    ],
+    "defeat": [
+      10,
+      11
+    ]
+  },
+  "limitations": [
+    "Original programmatic pixel art; human animation polish remains open.",
+    "Ending uses three original static pixel panels, not a fully animated film.",
+    "No final soundtrack or voice acting."
+  ]
+}

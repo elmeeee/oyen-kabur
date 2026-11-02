@@ -11,6 +11,8 @@ forest = json.loads((ROOT / 'assets/forest/manifest.json').read_text())
 manifest['assets'] += forest['assets']
 harbor = json.loads((ROOT / 'assets/harbor/manifest.json').read_text())
 manifest['assets'] += harbor['assets']
+palace = json.loads((ROOT / 'assets/palace/manifest.json').read_text())
+manifest['assets'] += palace['assets']
 keys = set()
 for source in manifest['sources']:
     path = ROOT / source['path']
@@ -50,3 +52,11 @@ for a in harbor['assets']:
     if 'animation' in a:
         assert a['animation']['frame_rate'] > 0 and a['frame_count'] > 1
 print(f"Validated {len(harbor['assets'])} harbor atlases and Captain animation frame references.")
+
+for frames in palace['boss_frames'].values():
+    assert all(0 <= f < 12 for f in frames)
+for a in palace['assets']:
+    assert a['origin'] == [0.5, 0.5]
+    if 'animation' in a:
+        assert a['animation']['frame_rate'] > 0 and a['frame_count'] > 1
+print(f"Validated {len(palace['assets'])} palace atlases, twelve boss poses and three ending panels.")

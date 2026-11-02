@@ -1,3 +1,4 @@
+import { EndingScene, CampaignSummaryScene, CreditsScene } from './scenes/CampaignScenes';
 import { ShopScene, AchievementsScene } from './scenes/ShopScene';
 import { WorldMapScene, LevelSelectScene, ResultScene } from './scenes/ProgressionScenes';
 import Phaser from 'phaser';
@@ -10,5 +11,5 @@ export const game = new Phaser.Game({
   pixelArt: true, roundPixels: true,
   scale: { mode: Phaser.Scale.FIT, autoCenter: Phaser.Scale.CENTER_BOTH },
   physics: { default: 'arcade', arcade: { gravity: { x: 0, y: arcadeGravity }, debug: false } },
-  scene: [MainMenuScene, ShopScene, AchievementsScene, WorldMapScene, LevelSelectScene, ResultScene, GameScene, GameOverScene, VictoryScene],
+  scene: [MainMenuScene, EndingScene, CampaignSummaryScene, CreditsScene, ShopScene, AchievementsScene, WorldMapScene, LevelSelectScene, ResultScene, GameScene, GameOverScene, VictoryScene],
 });

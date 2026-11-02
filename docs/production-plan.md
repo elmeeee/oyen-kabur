@@ -1,6 +1,6 @@
 # Oyen Kabur production plan
 
-Current implementation: Worlds 1–4 are playable. World 4 delivery and automated
+Current implementation: Worlds 1–5 are playable. World 5 delivery and automated
 verification are recorded below; the human playtest release gate remains open.
 Earlier checkpoints are retained as history and superseded by runtime deliveries.
 
@@ -27,7 +27,7 @@ production tileset. No original audio or settings screen exists yet.
 - [x] World 2 runtime: slippery ground, projectiles, moving carts, vertical nets, three-phase Juragan Lele.
 - [x] World 3 runtime: bamboo platforms, swinging bridges, water currents, monkeys, Monyet Sultan.
 - [x] World 4 runtime: docks, moving ships, wind/rain, cranes/cargo, Kapten Bebek.
-- [ ] World 5: guards, traps, vertical tower, gauntlet, multi-phase Raja Kucing Hitam.
+- [x] World 5 runtime: guards, traps, vertical tower, gauntlet, four-phase Raja Kucing Hitam, ending and credits.
 - [ ] Fifteen achievements, settings/audio controls and original SFX.
 - [ ] Five-world art generation, metadata, contact sheets, integration and validation.
 - [ ] Full 25-level browser transition/completion/replay and reload coverage.
@@ -322,3 +322,121 @@ headroom beneath a container shelf; tests check all boat/crane motion phases for
 standing clearance. Moving decks use Phaser direct control to avoid velocity-chasing
 oscillation around wave turns. Parallax backgrounds keep a fixed vertical horizon
 and integer pixel scaling during the warehouse climb.
+
+## World 5 runtime and campaign ending — Kerajaan Meong
+
+Branch `production/world5-kerajaan-meong` starts at **e74c377**, main's merge of
+World 4 PR #10. World 4 implementation 6f76cb2 and its stable build/unit/asset/browser
+results are verified ancestors. Existing World 1–4 level data, player physics,
+shop and cosmetics remain intact. All 25 stable campaign IDs are now registered.
+
+| Level | Implemented behavior |
+| --- | --- |
+| Gerbang Kerajaan | Patrolling royal cat guards, castle gate, moving gold/stone decks |
+| Lorong Istana | Warned arrow launchers, a collapsing gap floor, hidden door/fish route |
+| Menara Meong | Vertical stone shelves, direct-controlled elevators, ranged guard perches |
+| Ruang Tahta | Combined traps, fragile platforms, shadow wind, three-hit royal sentinel and final approach checkpoint |
+| Raja Kucing Hitam | Cinematic intro, four-phase twelve-hit encounter, defeat animation and automatic homecoming |
+
+`PalaceRuntime` remains separate from market, forest and harbor runtimes. It reuses
+the existing fragile-platform lifecycle and bounded wind impulse, plus Phaser direct
+control for translating stone decks. RoyalTrap clocks retain a full 1100ms visible
+warning before arrows or aimed guard magic; stalled frames cannot skip that warning.
+Patrol bodies can be jumped over. Ranged guards stand on collidable bonus perches
+outside the critical tower shelf landings. Checkpoints remain on permanent safe
+supports, retry/reload persists the attempt index, and successful completion clears
+that level's checkpoint for a full replay. Static route checks use SPEED/JUMP/GRAVITY;
+the collapsing 128px gap also has a jumpable fallback while its floor respawns.
+
+### Raja Kucing Hitam
+
+The deterministic state machine has intro → telegraph → attack → recovery → cooldown,
+then a 1200ms defeat animation and victory transition. Intro is a 2400ms dimmed
+throne-room dialogue with movement/jumping locked; Escape still pauses it. HP is
+visible after the intro. One contact hit counts per exposed recovery window.
+
+1. **Royal Claws**, health 12–10: alternates a low claw swipe and a 160px dash.
+2. **Shadow Magic**, health 9–7: a visible ghost marks the next teleport location;
+   the king relocates and releases low magic orbs in both directions.
+3. **Dark Kingdom**, health 6–4: a stone refuge rises and marked floor lanes warn
+   before becoming damaging shadow zones. Leaving a lane or jumping avoids damage.
+4. **Last Meow**, health 3–1: dash, teleport magic and shadow-floor attacks mix with
+   faster 1100ms telegraphs and 400ms cooldowns. Earlier telegraphs are 1500ms;
+   recovery is 1800ms, shortened to 1500ms in the last phase.
+
+Attacks have physical Arcade overlap bodies or explicit warned floor bounds. The
+king's dash body is low enough to clear with the unchanged player jump. Teleports
+use fixed arena anchors, not last-moment player tracking. Tired/hurt poses, gold hit
+particles, attack frames and a dropped-crown defeat pose expose encounter state.
+Defeat removes attacks and transitions automatically to the ending after the defeat
+animation. The sentinel uses a three-hit Royal Claws variant and opens the level-24
+exit rather than starting the campaign ending.
+
+### Ending, replay and saves
+
+Three original four-second pixel panels show the king surrendering, Oyen returning
+home safely with fish, and a welcome home. Enter, Space or click advances a panel.
+The completion summary displays levels, stars, best-score total, lifetime pickups
+and spendable fish. Credits acknowledge engine/tooling, original generators and
+shared project artwork, then provide world map and main menu buttons. The map's
+**TAMAT • ENDING [C]** link replays the ending/credits after a reload.
+
+Save format **3** loads versions 1, 2 and 3. Existing records, fish balances,
+owned/equipped cosmetics, achievements and checkpoint indexes are retained under
+the existing validation rules. `campaign.completed` derives from a validated final
+level record; a standalone flag cannot manufacture a win. `campaign.endingSeen` is
+stored only after all three panels and cannot survive without completion. A reload
+mid-ending keeps the win and allows replay from the map. Every validated completed
+level remains replayable; finishing again does not duplicate completion currency.
+Reset clears completion and ending flags. Storage failure retains these states for
+the session and the summary clearly reports that limitation.
+
+### Assets and release limits
+
+`generate_palace_art.py` authors 18 original palace atlases, including terrain,
+gold/fragile platforms, purple banners, gate, arrow traps, guards, sentinel, spell
+orbs, claws, floor shadows, hit particles, twelve 128px king poses, throne, two
+parallax layers and three 320×180 ending panels. Terrain uses 32px cells and guards
+64px frames. The manifest records palette, origins, animations and limitations;
+two contact sheets are included. Integer scaling, transparent sprites and nearest
+filtering are retained. Ending panels use a fixed original illustration of Oyen;
+equipped cosmetics remain saved and visible in gameplay rather than being painted
+into each ending panel. No final soundtrack, voice acting or fully animated film is
+claimed. Programmatic art, cinematography and animation still require human polish.
+
+Final release QA remains separate: unassisted traversals of all 25 levels, all fish
+and three-star routes, every boss under human input, difficulty/accessibility tuning,
+low/high frame-rate moving-platform checks, cosmetics and art review, audio/music,
+complete save/ending/replay flows across browsers and devices, and shipping review.
+World 1's planned chase/final art and the broader achievement/settings backlog are
+still open. Implementing World 5 does not make the entire game production-ready.
+
+### World 5 verified results
+
+- Strict TypeScript and Vite production build passed on Node 24.19.0.
+- All 33 unit tests passed, including v1/v2/v3 migration, campaign/ending flags,
+  prior-world state, purchases, replay rewards, reset and blocked-storage behavior.
+- The full four-smoke Chromium suite passed across Worlds 1–5. It verifies World 1's
+  actual five-cycle survival completion, earlier bosses, all five palace levels,
+  patrol damage, moving decks/jumps, warned arrows, floor collapse/respawn/pause,
+  secret fish, real tower jumps, checkpoint retry/fall recovery and sentinel defeat.
+- Raja's twelve hits across all four natural phases were completed with real keyboard
+  movement/jumps and physical contact during recovery. There is one encounter-entry
+  fixture; no player repositioning, boss-state override, health override or invincibility
+  mutation occurs during the final fight. This establishes physics feasibility, not
+  human difficulty balance.
+- The ending, safe-home panel, summary, credits, return to map, mid-ending reload,
+  viewed-ending persistence and a fresh boss replay all passed browser checks.
+- A fifth focused browser regression passed after the final compatibility fix:
+  a sparse version-2 save containing a validated final completion is reachable via
+  the actual world-map and level-select buttons, preserves the equipped bandana,
+  and supports credits-to-main-menu navigation. Completed records also prove their
+  own world's replay access; missing earlier records cannot strand a completed level.
+- Asset validation passed for 72 atlases, four original source hashes and four
+  existing PCM effects. Palace generation reproduced every atlas, ending panel,
+  manifest and contact sheet byte-for-byte. Boss/contact sheets and representative
+  palace, ending, summary and credits screenshots were inspected.
+
+The palace/earlier-level browser harnesses use focused entry/checkpoint fixtures,
+except for the final fight's actual keyboard controller. Complete human traversal
+and release sign-off remain open. No production-ready release claim is made.
