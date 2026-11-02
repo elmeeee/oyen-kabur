@@ -88,7 +88,7 @@ test('playable game flow in Chromium', { timeout: 60000 }, async () => {
               while(boss.state==='recovery'&&steps++<20)scene.market.update(250);
             }
           }
-          return scene.market.defeated&&boss.health===0;
+          return scene.market.defeated&&boss.health===0&&scene.market.shots.size===0;
         })()`);
         assert.equal(fight, true);
       }
